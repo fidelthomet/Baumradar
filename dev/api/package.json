@@ -1,0 +1,12 @@
+{
+  "name": "baumkataster-API",
+  "description": "an API for https://data.stadt-zuerich.ch/dataset/baumkataster available at http://api.flaneur.io/baumkataster",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.x",
+    "request": "2.x",
+    "cron": "1.x",
+    "time": "0.x",
+    "sqlite3": "3.x"
+  }
+}

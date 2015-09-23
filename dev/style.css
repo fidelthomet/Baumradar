@@ -1,0 +1,93 @@
+body {
+  margin: 0px;
+  font-family: "aktiv-grotesk", sans-serif; }
+  body header {
+    height: 48px;
+    width: 100%;
+    position: fixed;
+    font-size: 24px;
+    font-weight: 700;
+    opacity: .9;
+    border-bottom: 1px solid #aaa;
+    z-index: 10;
+    background-color: #fff; }
+    body header #title {
+      padding: 8px 12px; }
+  body #map {
+    position: fixed;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    left: 0px; }
+    body #map .ol-attribution {
+      bottom: 107px; }
+  body #list {
+    background: #fff;
+    position: absolute;
+    margin-top: -100px;
+    top: 100%;
+    width: 100%;
+    opacity: .9; }
+    body #list .treeItem {
+      position: relative;
+      min-height: 64px;
+      border-top: 1px solid #23538C; }
+      body #list .treeItem .left {
+        position: absolute;
+        width: 64px;
+        min-height: 64px;
+        background: url("icons/t1.svg") no-repeat center center;
+        background-size: auto 48px; }
+        body #list .treeItem .left.t1 {
+          background-image: url("icons/t1.svg"); }
+        body #list .treeItem .left.t2 {
+          background-image: url("icons/t2.svg"); }
+        body #list .treeItem .left.t3 {
+          background-image: url("icons/t3.svg"); }
+        body #list .treeItem .left.t4 {
+          background-image: url("icons/t4.svg"); }
+        body #list .treeItem .left.t5 {
+          background-image: url("icons/t5.svg"); }
+        body #list .treeItem .left.t6 {
+          background-image: url("icons/t6.svg"); }
+        body #list .treeItem .left.t7 {
+          background-image: url("icons/t7.svg"); }
+        body #list .treeItem .left.t8 {
+          background-image: url("icons/t8.svg"); }
+        body #list .treeItem .left.t9 {
+          background-image: url("icons/t9.svg"); }
+        body #list .treeItem .left.t10 {
+          background-image: url("icons/t10.svg"); }
+      body #list .treeItem .right {
+        left: 64px;
+        right: 0px;
+        min-height: 64px;
+        margin-left: 64px;
+        padding: 4px 8px;
+        border-left: 1px solid #23538C; }
+        body #list .treeItem .right .title {
+          font-size: 18px;
+          color: #23538C; }
+        body #list .treeItem .right .subtitle {
+          font-style: italic;
+          font-size: 13px;
+          color: #5994DA; }
+        body #list .treeItem .right .values {
+          margin-top: 5px;
+          border-top: 1px solid #23538C;
+          margin: 5px -8px -2px -8px;
+          padding: 2px 8px 0px; }
+          body #list .treeItem .right .values div {
+            color: #23538C;
+            display: inline-block; }
+            body #list .treeItem .right .values div .icon {
+              height: 14px;
+              width: 14px;
+              background: url("icons/direction.svg") no-repeat center center;
+              margin-right: 1px; }
+            body #list .treeItem .right .values div.Pflanzjahr {
+              margin-left: 20px; }
+              body #list .treeItem .right .values div.Pflanzjahr .icon {
+                background: url("icons/year.svg") no-repeat center center; }
+
+/*# sourceMappingURL=style.css.map */

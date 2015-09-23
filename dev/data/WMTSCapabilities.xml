@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+   
+   <ows:ServiceIdentification>
+      <ows:Title>Web Map Tile Service</ows:Title>
+      <ows:ServiceType>OGC WMTS</ows:ServiceType>
+      <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      <ows:Fees>none</ows:Fees>
+   </ows:ServiceIdentification>
+   
+   <ows:ServiceProvider>
+      <ows:ProviderName>City of Zurich</ows:ProviderName>
+      <ows:ProviderSite xlink:href="http://www.stadt-zuerich.ch"/>
+      <ows:ServiceContact>
+         <ows:IndividualName>Georg Andersson</ows:IndividualName>
+      </ows:ServiceContact>
+   </ows:ServiceProvider>
+   
+   <ows:OperationsMetadata>
+      <ows:Operation name="GetCapabilities">
+         <ows:DCP>
+            <ows:HTTP>
+               <ows:Get xlink:href="http://www.gis.stadt-zuerich.ch/maps">
+                  <ows:Constraint name="GetEncoding">
+                     <ows:AllowedValues>
+                        <ows:Value>RESTful</ows:Value>
+                     </ows:AllowedValues>
+                  </ows:Constraint>
+               </ows:Get>
+            </ows:HTTP>
+         </ows:DCP>
+      </ows:Operation>
+      <ows:Operation name="GetTile">
+         <ows:DCP>
+            <ows:HTTP>
+               <ows:Get xlink:href="http://www.gis.stadt-zuerich.ch/maps">
+                  <ows:Constraint name="GetEncoding">
+                     <ows:AllowedValues>
+                        <ows:Value>RESTful</ows:Value>
+                     </ows:AllowedValues>
+                  </ows:Constraint>
+               </ows:Get>
+            </ows:HTTP>
+         </ows:DCP>
+      </ows:Operation>
+   </ows:OperationsMetadata>
+   
+   <Contents>
+      <Layer>
+         <ows:Title>Luftbild (1999)</ows:Title>
+         <ows:Identifier>Luftbild_1999</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Luftbild1999/MapServer/WMTS/tile/1.0.0/tiled_Luftbild1999/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Luftbild (2003)</ows:Title>
+         <ows:Identifier>Luftbild_2003</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Luftbild2003/MapServer/WMTS/tile/1.0.0/tiled_Luftbild2003/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Luftbild (2007)</ows:Title>
+         <ows:Identifier>Luftbild_2007</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Luftbild2007/MapServer/WMTS/tile/1.0.0/tiled_Luftbild2007/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Luftbild (2011)</ows:Title>
+         <ows:Identifier>Luftbild_2011</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Luftbild2011/MapServer/WMTS/tile/1.0.0/tiled_Luftbild2011/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Luftbild Hybrid (2011)</ows:Title>
+         <ows:Identifier>LuftbildHybrid2011</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/LuftbildHybrid2011/MapServer/WMTS/tile/1.0.0/tiled_LuftbildHybrid2011/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Stadtplan (1793)</ows:Title>
+         <ows:Identifier>Stadtplan_1793</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1793/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1793/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Stadtplan (1860)</ows:Title>
+         <ows:Identifier>Stadtplan_1860</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1860/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1860/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Stadtplan (1864)</ows:Title>
+         <ows:Identifier>Stadtplan_1864</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1864/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1864/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Stadtplan (1900)</ows:Title>
+         <ows:Identifier>Stadtplan_1900</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1900/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1900/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Stadtplan</ows:Title>
+         <ows:Identifier>Stadtplan</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Stadtplan3D/MapServer/WMTS/tile/1.0.0/tiled_Stadtplan3D/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (1970)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_1970</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1970/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1970/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (1978)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_1978</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1978/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1978/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (1984)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_1984</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1984/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1984/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (1987)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_1987</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1987/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1987/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (1991)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_1991</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1991/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1991/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (1999)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_1999</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan1999/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan1999/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (2010)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_2010</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan2010/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan2010/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (2011)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_2011</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan2011/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan2011/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (2012)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_2012</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/Uebersichtsplan2012/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan2012/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (2013)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_2013</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://gis-tst.global.szh.loc/maps/rest/services/tiled/Uebersichtsplan2013/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan2013/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (2014)</ows:Title>
+         <ows:Identifier>Uebersichtsplan_2014</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://gis-tst.global.szh.loc/maps/rest/services/tiled/Uebersichtsplan2014/MapServer/WMTS/tile/1.0.0/tiled_Uebersichtsplan2014/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <Layer>
+         <ows:Title>Übersichtsplan (aktuell)</ows:Title>
+         <ows:Identifier>UebersichtsplanAktuell</ows:Identifier>
+         <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::21781">
+            <ows:LowerCorner>672499.0 238999.0</ows:LowerCorner>
+            <ows:UpperCorner>689999.0 256999.0</ows:UpperCorner>
+         </ows:BoundingBox>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>8.398302613481356 47.29709259053008</ows:LowerCorner>
+            <ows:UpperCorner>8.633312509540968 47.46115331797573</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+         <Style isDefault="true">
+            <ows:Title>Default Style</ows:Title>
+            <ows:Identifier>default</ows:Identifier>
+         </Style>
+         <Format>image/png</Format>
+         <TileMatrixSetLink>
+            <TileMatrixSet>default028mm</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/png" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled/UebersichtsplanAktuell/MapServer/WMTS/tile/1.0.0/UebersichtsplanAktuell/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+      </Layer>
+      
+      <TileMatrixSet>
+             <ows:Title>TileMatrix using 0.28mm</ows:Title>
+             <ows:Abstract>The tile matrix set that has scale values calculated based on the dpi defined by OGC specification (dpi assumes 0.28mm as the physical distance of a pixel).</ows:Abstract> <ows:Identifier>default028mm</ows:Identifier>
+             <ows:SupportedCRS>urn:ogc:def:crs:EPSG::21781</ows:SupportedCRS>
+             <TileMatrix>
+                  <ows:Identifier>0</ows:Identifier>
+                  <ScaleDenominator>236235.59151877242</ScaleDenominator>
+                  <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                  <TileWidth>512</TileWidth> 
+                  <TileHeight>512</TileHeight>
+                  <MatrixWidth>889</MatrixWidth> 
+                  <MatrixHeight>903</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                 <ows:Identifier>1</ows:Identifier>
+                 <ScaleDenominator>118117.79575938621</ScaleDenominator>
+                 <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                 <TileWidth>512</TileWidth> 
+                 <TileHeight>512</TileHeight>
+                 <MatrixWidth>1777</MatrixWidth> 
+                 <MatrixHeight>1806</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                 <ows:Identifier>2</ows:Identifier>
+                 <ScaleDenominator>60476.31142880573</ScaleDenominator>
+                 <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                 <TileWidth>512</TileWidth> 
+                 <TileHeight>512</TileHeight>
+                 <MatrixWidth>3470</MatrixWidth> 
+                 <MatrixHeight>3527</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>3</ows:Identifier>
+                <ScaleDenominator>30238.155714402867</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>6940</MatrixWidth> 
+                <MatrixHeight>7053</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>4</ows:Identifier>
+                <ScaleDenominator>15119.077857201433</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>13880</MatrixWidth> 
+                <MatrixHeight>14106</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>5</ows:Identifier>
+                <ScaleDenominator>7559.538928600717</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>27759</MatrixWidth> 
+                <MatrixHeight>28212</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>6</ows:Identifier>
+                <ScaleDenominator>3779.7694643003583</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>55517</MatrixWidth> 
+                <MatrixHeight>56424</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>7</ows:Identifier>
+                <ScaleDenominator>1889.8847321501792</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>111033</MatrixWidth> 
+                <MatrixHeight>112848</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>8</ows:Identifier>
+                <ScaleDenominator>944.9423660750896</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>222065</MatrixWidth> 
+                <MatrixHeight>225695</MatrixHeight>
+             </TileMatrix>
+             <TileMatrix>
+                <ows:Identifier>9</ows:Identifier>
+                <ScaleDenominator>472.4711830375448</ScaleDenominator>
+                <TopLeftCorner>-2.93864E7 3.08145E7</TopLeftCorner> 
+                <TileWidth>512</TileWidth> 
+                <TileHeight>512</TileHeight>
+                <MatrixWidth>444130</MatrixWidth> 
+                <MatrixHeight>451389</MatrixHeight>
+             </TileMatrix>
+         </TileMatrixSet>
+         
+   </Contents>
+   <ServiceMetadataURL xlink:href="http://www.gis.stadt-zuerich.ch/wmts/WMTS-ZH-STZH-OGD.xml" />
+</Capabilities>
