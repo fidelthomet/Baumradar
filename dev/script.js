@@ -1,3 +1,5 @@
+
+
 var userLocation = {
 	lat: 47.367010,
 	lon: 8.545085
@@ -71,7 +73,7 @@ var map, view
 var markers
 
 var featureUser = new ol.Feature({
-	geometry: new ol.geom.Point(proj4('EPSG:3857', 'EPSG:21781', [8.525636, 47.394982])),
+	geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [8.525636, 47.394982])),
 	name: 'Null Island',
 	population: 4000,
 	rainfall: 500
@@ -113,23 +115,22 @@ $(function() {
 
 
 
-	// projection = ol.proj.get('EPSG:3857');
+	projection = ol.proj.get('EPSG:21781');
 
-	// projection.setExtent([420000, 30000, 900000, 350000]);
+	projection.setExtent([420000, 30000, 900000, 350000]);
+	console.log(projection)
 	var wmtsUrl = 'https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
 
 	var center = [683200, 246650];
 	var zoom = 12;
-	//var extent = [420000, 30000, 900000, 350000]
+	var extent = [420000, 30000, 900000, 350000]
 
 	view = new ol.View({
-		rojection: ol.proj.get('EPSG:3857'),
-		// displayProjection: ol.proj.get('EPSG:3857'),
-		// projection: ol.proj.get('EPSG:3857'),
+		projection: projection,
 		center: center,
-		zoom: zoom
-			// minZoom: 12,
-			// maxZoom: 14
+		zoom: zoom,
+		minZoom: 12,
+		maxZoom: 14
 	})
 
 
@@ -139,7 +140,6 @@ $(function() {
 	xhr.open('GET', wmtsUrl, true);
 	xhr.onload = function() {
 		if (xhr.status === 200) {
-			
 			var parser = new ol.format.WMTSCapabilities();
 			capabilities = parser.read(xhr.responseXML);
 
@@ -156,16 +156,15 @@ $(function() {
 
 				options.tilePixelRatio = 1
 				var olLayer = new ol.layer.Tile({
-					
+					extent: extent,
 					source: new ol.source.WMTS(options),
-					visible: i === 9
+					visible: i === 21
 				})
 				layers.push(olLayer);
 
 			};
 
 			layers.push(vectorLayer, vectorTreeLayer);
-			
 
 			// create map
 			map = new ol.Map({
@@ -174,7 +173,7 @@ $(function() {
 				view: view,
 				interactions: ol.interaction.defaults({
 					mouseWheelZoom: true,
-					pinchZoom: false,
+					pinchZoom: true,
 					pinchRotate: false,
 					doubleClickZoom: false
 				}),
@@ -182,15 +181,6 @@ $(function() {
 					new ol.control.Attribution
 				]
 			});
-
-
-			olmapnik = new ol.layer.Tile({
-				source: new ol.source.OSM(),
-				// projection: ol.proj.get('EPSG:3857'),
-				opacity: .1
-			})
-			map.addLayer(olmapnik);
-			
 
 			map.on('click', function(evt) {
 				var feature = map.forEachFeatureAtPixel(evt.pixel,
@@ -212,11 +202,11 @@ $(function() {
 
 					var featureTrees = []
 					var data = JSON.parse(resp)
-
+					console.log(data.length)
 					data.forEach(function(item, index) {
 
 						var featureTree = new ol.Feature({
-							geometry: new ol.geom.Point(ol.proj.transform([item.lon, item.lat], 'EPSG:4326', 'EPSG:3857')),
+							geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [item.lon, item.lat])),
 							name: 'Null Island',
 							population: 4000,
 							rainfall: 500
@@ -263,6 +253,8 @@ function createList(data) {
 		// angle in degrees
 		var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
+		console.log(angleDeg)
+
 		$(this).css("transform", "rotate(" + angleDeg + "deg)")
 	})
 }
@@ -306,7 +298,7 @@ function createDom(type, data) {
 
 	switch (type) {
 		case "treeItem":
-			return str = div("treeItem", [div("left t" + pictos[data.Gruppe]), div("right", [div("title", [data.Baumname_D]), div("subtitle", [data.Baumname_LAT]), div("values", [values(data)])])])
+			return str = div("treeItem", [div("left t"+pictos[data.Gruppe]), div("right", [div("title", [data.Baumname_D]), div("subtitle", [data.Baumname_LAT]), div("values", [values(data)])])])
 			break;
 	}
 }
@@ -323,12 +315,15 @@ function watchPosition(resolve, reject, test) {
 			userLocation.lat = position.coords.latitude
 			userLocation.lon = position.coords.longitude
 
-			//view.setCenter([userLocation.lon, userLocation.lat])
-			view.setCenter(ol.proj.transform([userLocation.lon, userLocation.lat], 'EPSG:4326', 'EPSG:3857'))
-			featureUser.setGeometry(new ol.geom.Point(ol.proj.transform([userLocation.lon, userLocation.lat], 'EPSG:4326', 'EPSG:3857')))
+			// view.setCenter(proj4('EPSG:4326', 'EPSG:21781', [userLocation.lon, userLocation.lat]))
+			featureUser.setGeometry(new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [userLocation.lon, userLocation.lat])))
 			resolve()
 		})
 	} else {
 		resolve()
 	}
+}
+
+function toggle(id){
+	layers[id].setVisible(!layers[id].getVisible())
 }

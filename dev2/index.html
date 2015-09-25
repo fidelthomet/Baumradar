@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Zürcher Bäume</title>
+	<!-- Mobile -->
+	<meta name="viewport" content="width=device-width">
+	
+	<!-- Typekit -->
+	<script src="https://use.typekit.net/ivz4cnl.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+	<!-- Open Layers / Proj4 -->
+	<script src="libs/ol.js"></script>
+	<script src="libs/proj4.js"></script>
+	<script src="libs/21781.js"></script> <!-- From http://epsg.io -->
+	<!-- Other libraries -->
+	<script src="libs/jquery-2.1.4.min.js"></script>
+	<script src="libs/es6-promise.min.js"></script>
+	<!-- Scripts -->
+	<script src="scripts/main.js"></script>
+	<script src="scripts/map.js"></script>
+	<script src="scripts/requests.js"></script>
+	<!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="ol.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+	<header>
+		<div class="v-map">
+		<div class="title">Zürcher Bäume</div>
+			<div class="hamburger"></div>
+		</div>
+	</header>
+	<div id="map"></div>
+	<div id="trees"></div>
+</body>
+</html>

@@ -119,7 +119,7 @@ $(function() {
 	var wmtsUrl = 'https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
 
 	var center = [683200, 246650];
-	var zoom = 12;
+	var zoom = 18;
 	//var extent = [420000, 30000, 900000, 350000]
 
 	view = new ol.View({
@@ -139,7 +139,7 @@ $(function() {
 	xhr.open('GET', wmtsUrl, true);
 	xhr.onload = function() {
 		if (xhr.status === 200) {
-			
+
 			var parser = new ol.format.WMTSCapabilities();
 			capabilities = parser.read(xhr.responseXML);
 
@@ -156,7 +156,7 @@ $(function() {
 
 				options.tilePixelRatio = 1
 				var olLayer = new ol.layer.Tile({
-					
+
 					source: new ol.source.WMTS(options),
 					visible: i === 9
 				})
@@ -164,8 +164,16 @@ $(function() {
 
 			};
 
-			layers.push(vectorLayer, vectorTreeLayer);
-			
+			olmapnik = new ol.layer.Tile({
+				source: new ol.source.Stamen({
+					layer: 'toner-background'
+				})
+			})
+
+
+
+			layers.push(olmapnik, vectorLayer, vectorTreeLayer);
+
 
 			// create map
 			map = new ol.Map({
@@ -174,7 +182,7 @@ $(function() {
 				view: view,
 				interactions: ol.interaction.defaults({
 					mouseWheelZoom: true,
-					pinchZoom: false,
+					pinchZoom: true,
 					pinchRotate: false,
 					doubleClickZoom: false
 				}),
@@ -184,13 +192,6 @@ $(function() {
 			});
 
 
-			olmapnik = new ol.layer.Tile({
-				source: new ol.source.OSM(),
-				// projection: ol.proj.get('EPSG:3857'),
-				opacity: .1
-			})
-			map.addLayer(olmapnik);
-			
 
 			map.on('click', function(evt) {
 				var feature = map.forEachFeatureAtPixel(evt.pixel,
