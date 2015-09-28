@@ -1,5 +1,3 @@
-
-
 var userLocation = {
 	lat: 47.367010,
 	lon: 8.545085
@@ -116,11 +114,9 @@ $(function() {
 
 
 	projection = ol.proj.get('EPSG:21781');
-
 	projection.setExtent([420000, 30000, 900000, 350000]);
-	console.log(projection)
+	
 	var wmtsUrl = 'https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
-
 	var center = [683200, 246650];
 	var zoom = 12;
 	var extent = [420000, 30000, 900000, 350000]

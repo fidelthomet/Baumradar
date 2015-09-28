@@ -5,6 +5,7 @@
 	<title>Zürcher Bäume</title>
 	<!-- Mobile -->
 	<meta name="viewport" content="width=device-width">
+	<meta name="apple-mobile-web-app-capable" content="yes">
 	
 	<!-- Typekit -->
 	<script src="https://use.typekit.net/ivz4cnl.js"></script>
@@ -20,6 +21,8 @@
 	<script src="scripts/main.js"></script>
 	<script src="scripts/map.js"></script>
 	<script src="scripts/requests.js"></script>
+	<script src="scripts/geolocation.js"></script>
+	<script src="scripts/helper.js"></script>
 	<!-- Styles -->
 	<link rel="stylesheet" type="text/css" href="ol.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -28,11 +31,36 @@
 <body>
 	<header>
 		<div class="v-map">
-		<div class="title">Zürcher Bäume</div>
+			<div class="title">Zürcher Bäume</div>
 			<div class="hamburger"></div>
 		</div>
 	</header>
 	<div id="map"></div>
-	<div id="trees"></div>
+	<div id="geolocation"></div>
+	<div id="trees">
+		<div class="tree">
+			<div class="title">
+				<div class="left">
+					<div class="dir"></div>
+					<div class="num">1</div>
+					<div class="dist">2m</div>
+				</div>
+				<div class="border"></div>
+				<div class="right">
+					<div class="ger">Gemeine Eberesche, Vogelbeerbaum</div>
+					<div class="lat">Sorbus aucuparia</div>
+				</div>
+			</div>
+			<div class="details">
+				<div class="detail year">2003</div>
+				<div class="detail height">10-20m</div>
+				<div class="detail width">bis 10m</div>
+				<div class="detail baumnum">WP-956</div>
+			</div>
+			<div class="location">
+				<div>Idaplatz Wiedikon</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

@@ -1,8 +1,9 @@
 body {
   margin: 0px;
-  font-family: "aktiv-grotesk", sans-serif; }
+  font-family: "aktiv-grotesk", sans-serif;
+  background: #fff; }
   body header .title {
-    position: absolute;
+    position: fixed;
     height: 32px;
     left: 0px;
     right: 48px;
@@ -11,7 +12,7 @@ body {
     font-weight: 700;
     color: #2DD693; }
   body header .hamburger {
-    position: absolute;
+    position: fixed;
     right: 0px;
     top: 0px;
     width: 48px;
@@ -24,8 +25,117 @@ body {
     top: 0px;
     left: 0px;
     width: 100%;
-    height: 100%;
-    background: url(svg/map-bg.svg) top left; }
+    bottom: 144px;
+    background: #fff;
+    -webkit-tap-highlight-color: transparent; }
+  body #geolocation {
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    bottom: 160px;
+    right: 80px;
+    background: #fff url(svg/geolocation.svg) center center no-repeat;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 4px; }
+  body #trees {
+    position: absolute;
+    top: 100%;
+    margin-top: -144px;
+    width: 100%;
+    background: #fff;
+    min-height: 144px;
+    box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.5); }
+    body #trees .tree {
+      width: 100%; }
+      body #trees .tree .title {
+        position: relative;
+        width: 100%;
+        min-height: 64px;
+        background: #2DD693;
+        color: #fff;
+        font-size: 12px; }
+        body #trees .tree .title .left, body #trees .tree .title .border {
+          position: absolute; }
+          body #trees .tree .title .left.left, body #trees .tree .title .border.left {
+            height: 100%;
+            width: 48px; }
+            body #trees .tree .title .left.left .dir, body #trees .tree .title .border.left .dir {
+              width: 34px;
+              height: 34px;
+              top: 7px;
+              left: 7px;
+              position: absolute;
+              background: url(svg/dir.svg) center center no-repeat; }
+            body #trees .tree .title .left.left .num, body #trees .tree .title .border.left .num {
+              color: #2DD693;
+              font-weight: 700;
+              position: absolute;
+              text-align: center;
+              top: 16px;
+              width: 48px; }
+            body #trees .tree .title .left.left .dist, body #trees .tree .title .border.left .dist {
+              position: absolute;
+              text-align: center;
+              top: 40px;
+              width: 48px; }
+          body #trees .tree .title .left.border, body #trees .tree .title .border.border {
+            position: absolute;
+            left: 48px;
+            width: 1px;
+            top: 6px;
+            bottom: 6px;
+            background: #fff; }
+        body #trees .tree .title .right {
+          margin-left: 49px;
+          padding: 6px 10px; }
+          body #trees .tree .title .right .ger {
+            font-size: 24px;
+            line-height: 26px;
+            margin-bottom: 5px;
+            margin-top: 3px; }
+          body #trees .tree .title .right .lat {
+            margin-bottom: 3px; }
+    body #trees .details {
+      height: 36px;
+      padding-left: 12px;
+      padding-right: 12px;
+      border-bottom: 1px solid #2DD693;
+      text-align: justify;
+      font-size: 12px;
+      color: #2DD693; }
+      body #trees .details .detail {
+        display: inline-block;
+        margin-top: -2px; }
+        body #trees .details .detail:before {
+          padding-right: 2px;
+          top: 7px;
+          position: relative; }
+        body #trees .details .detail.year:before {
+          content: url("svg/detail-year.svg"); }
+        body #trees .details .detail.height:before {
+          content: url("svg/detail-height.svg"); }
+        body #trees .details .detail.width:before {
+          content: url("svg/detail-width.svg"); }
+        body #trees .details .detail.baumnum:before {
+          content: url("svg/detail-id.svg"); }
+      body #trees .details:after {
+        content: "";
+        width: 100%;
+        display: inline-block; }
+    body #trees .location {
+      height: 36px;
+      padding-left: 12px;
+      padding-right: 12px;
+      border-bottom: 1px solid #2DD693;
+      font-size: 12px;
+      color: #2DD693; }
+      body #trees .location div {
+        margin-top: -2px; }
+        body #trees .location div:before {
+          padding-right: 2px;
+          top: 7px;
+          position: relative;
+          content: url("svg/location.svg"); }
   body.satelite header .title {
     color: #fff; }
   body.satelite header .hamburger {
