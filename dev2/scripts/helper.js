@@ -16,3 +16,31 @@ function getDistanceFromLatLonInM(lastRequest, mapCenter) {
 function deg2rad(deg) {
 	return deg * (Math.PI / 180)
 }
+
+function template(dom, object){
+	return dom.replace(/{(\w+)}/g, function(_,k){
+      return object[k];
+	});
+}
+
+function cleanArtist(artist){
+	if(artist.indexOf("</a>")!=-1){
+		// console.log(artist)
+		return artist.split('">')[1].split("</a>")[0]
+	} else {
+		return artist
+	}
+}
+
+function wikiThumb(img){
+	var factor = Math.round(window.devicePixelRatio*window.innerWidth)
+	
+	if(img.width<=factor)
+		return img.url
+
+	var url = img.url.split("/commons/").join("/commons/thumb/").split("/")
+	url.push(factor+"px-"+url[url.length-1])
+
+	return url.join("/")
+}
+

@@ -136,6 +136,58 @@ body {
           top: 7px;
           position: relative;
           content: url("svg/location.svg"); }
+    body #trees .images {
+      background-color: #000;
+      height: 204px;
+      width: 100%;
+      position: relative;
+      margin-top: -1px;
+      padding: 2px 0px;
+      overflow: hidden; }
+      body #trees .images .img1 {
+        height: 204px;
+        width: 66%;
+        margin-left: -1px;
+        position: absolute;
+        background-size: cover;
+        background-position: center; }
+      body #trees .images .img2 {
+        left: 66%;
+        margin-left: 1px;
+        position: absolute;
+        width: 34%;
+        height: 100px;
+        background-size: cover;
+        background-position: center; }
+      body #trees .images .img3 {
+        width: 34%;
+        height: 102px;
+        top: 104px;
+        left: 66%;
+        margin-left: 1px;
+        position: absolute;
+        background-size: cover;
+        background-position: center center; }
+      body #trees .images .simg {
+        height: 204px;
+        width: 100%;
+        position: absolute;
+        background-size: cover;
+        background-position: center; }
+    body #trees .wiki {
+      hyphens: auto;
+      -o-hyphens: auto;
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      padding: 12px;
+      font-size: 12px; }
+      body #trees .wiki a {
+        text-decoration: none;
+        color: #2DD693; }
+    body #trees #overview {
+      width: 100%;
+      height: 270px; }
   body.satelite header .title {
     color: #fff; }
   body.satelite header .hamburger {

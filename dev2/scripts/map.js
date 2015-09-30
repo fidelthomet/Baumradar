@@ -1,9 +1,11 @@
 var map, baseLayers = [], treeLayer,
-	features = {}
+	features = {}, treeStyles = {}
 
 function initMap(resolve, reject) {
+	// resolve()
+	// return
 	// WMTS Server Eigenschaften abfragen. Hier wird ein Proxy benötigt: https://cors-proxy.xiala.net/
-	var wmtsUrl = 'https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
+	var wmtsUrl = state.proxy+'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
 
 	$.get(wmtsUrl).success(function(data) {
 
@@ -164,19 +166,30 @@ function initUser() {
 function initTrees(trees) {
 	features.trees = []
 
-	var style = new ol.style.Style({
+	treeStyles.lgreen = new ol.style.Style({
+		image: new ol.style.Icon(({
+			src: 'svg/tree-green-light.svg'
+		}))
+	});
+
+	treeStyles.green = new ol.style.Style({
 		image: new ol.style.Icon(({
 			src: 'svg/tree-green.svg'
 		}))
 	});
 
 	trees.forEach(function(tree) {
+
 		var feature = new ol.Feature({
 			geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [tree.lon, tree.lat])),
 			dist: parseInt(tree.distance),
 			Baumnummer: tree.Baumnummer
 		})
-		feature.setStyle(style);
+		if(!features.trees.length)
+			feature.setStyle(treeStyles.green);
+		else
+			feature.setStyle(treeStyles.lgreen);
+
 		features.trees.push(feature)
 	})
 
@@ -197,14 +210,8 @@ function updateUser() {
 }
 
 function updateTrees(trees) {
-	console.log("TTT")
-	var newFeatures = []
 
-	var style = new ol.style.Style({
-		image: new ol.style.Icon(({
-			src: 'svg/tree-green.svg'
-		}))
-	});
+	var newFeatures = []
 
 	trees.forEach(function(tree) {
 
@@ -213,17 +220,13 @@ function updateTrees(trees) {
 			dist: parseInt(tree.distance),
 			Baumnummer: tree.Baumnummer
 		})
-		feature.setStyle(style);
+		feature.setStyle(treeStyles.lgreen);
 		features.trees.push(feature)
 		
 		newFeatures.push(feature)
 
 	})
-
-	console.log(newFeatures.length)
-
 	treeLayer.getSource().addFeatures(newFeatures)
-	console.log(".")
 }
 
 function switchMaps() {
@@ -245,9 +248,13 @@ function mapEvents() {
 				return feature;
 			});
 		if (feature) {
-			// alert("1")
+			details(feature.getProperties().Baumnummer)
+			features.trees.forEach(function (item){
+				item.setStyle(treeStyles.lgreen)
+			})
+			feature.setStyle(treeStyles.green)
 		} else {
-			// console.log("0")
+			
 		}
 	});
 
