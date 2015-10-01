@@ -8,11 +8,12 @@ function initOverview(tree) {
 	}))
 
 	overviewPromises.push(new Promise(getDistricts))
-
+	overviewPromises.push(new Promise(getZuerichsee))
 
 	Promise.all(overviewPromises).then(function(data) {
 		var locations = data[0]
 		var districts = data[1]
+		var zuerichsee = data[2]
 		var styles = [
 			/* We are using two different styles for the polygons:
 			 *  - The first style is for the polygons themselves.
@@ -45,6 +46,17 @@ function initOverview(tree) {
 			// })
 		];
 
+		var stylesLake = [
+			new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#C8C8C8',
+					width: .5
+				}),
+				fill: new ol.style.Fill({
+					color: '#EEEEEE'
+				})
+			}),
+		]
 
 
 		var source = new ol.source.Vector({
@@ -60,10 +72,23 @@ function initOverview(tree) {
 			style: styles
 		});
 
+		var sourceLake = new ol.source.Vector({
+			features: (new ol.format.GeoJSON()).readFeatures(zuerichsee, {
+				featureProjection: "EPSG:3857"
+			}),
+			projection: 'EPSG:3857'
+		});
+
+		var layerLake = new ol.layer.Vector({
+			source: sourceLake,
+			projection: 'EPSG:3857',
+			style: stylesLake
+		});
+
 
 
 		overview = new ol.Map({
-			layers: [layer],
+			layers: [layer, layerLake],
 			target: 'overview',
 			view: new ol.View({
 				center: [8.536999947103082, 47.37367243001017],
@@ -105,7 +130,7 @@ function createTreeLayer(locations, tree) {
 		image: new ol.style.Circle({
 			radius: 3,
 			fill: new ol.style.Fill({
-				color: '#FF87D9'
+				color: '#AD86FF'
 			})
 		}),
 	});

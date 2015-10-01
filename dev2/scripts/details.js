@@ -129,7 +129,7 @@ function cleanDetails(tree) {
 }
 
 var detailDom = {
-	container: '<div id="{Baumnummer}" class="tree"><div class="images"></div><div class="wiki"></div><div id="overview"></div>',
+	container: '<div id="{Baumnummer}" class="tree"><div class="images"></div><div class="wiki"></div><div id="overviewTitle">Vorkommen</div><div id="overview"></div>',
 	title: '<div class="title"><div class="left"><div class="dir"></div><div class="num">{number}</div><div class="dist">{distance}</div></div><div class="border"></div><div class="right"><div class="ger">{Baumname_D}</div><div class="lat">{Baumname_LAT}</div></div></div>',
 	details: '<div class="details">	<div class="detail year">{Pflanzjahr}</div>	<div class="detail height">{height}</div>	<div class="detail width">{width}</div>	<div class="detail baumnum">{Baumnummer}</div></div><div class="location"><div>{Strasse}, {Quartier}</div></div></div>',
 	images: '<div class="img1" style="background-image:url({img1})" attr-artist="{artist1}" attr-licence="{licence1}" attr-lurl="{lurl1}"></div><div class="img2" style="background-image:url({img2})" attr-artist="{artist2}" attr-licence="{licence2}" attr-lurl="{lurl2}"></div><div class="img3" style="background-image:url({img3})" attr-artist="{artist3}" attr-licence="{licence3}" attr-lurl="{lurl3}"></div>',

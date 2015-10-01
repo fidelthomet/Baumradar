@@ -6,12 +6,12 @@
     <defs></defs>
     <g id="playground" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
         <g id="Group-Copy-2" sketch:type="MSLayerGroup">
-            <circle id="Oval-141" stroke="#FF87D9" stroke-width="2" fill-opacity="0.400000006" fill="#FF87D9" sketch:type="MSShapeGroup" cx="12" cy="12" r="8"></circle>
-            <circle id="Oval-141-Copy" stroke="#FF87D9" stroke-width="2" sketch:type="MSShapeGroup" cx="12" cy="12" r="2"></circle>
-            <rect id="Rectangle-22" fill="#FF87D9" sketch:type="MSShapeGroup" x="11" y="0" width="2" height="4"></rect>
-            <rect id="Rectangle-22-Copy" fill="#FF87D9" sketch:type="MSShapeGroup" x="11" y="20" width="2" height="4"></rect>
-            <rect id="Rectangle-22-Copy-2" fill="#FF87D9" sketch:type="MSShapeGroup" x="20" y="11" width="4" height="2"></rect>
-            <rect id="Rectangle-22-Copy-3" fill="#FF87D9" sketch:type="MSShapeGroup" x="0" y="11" width="4" height="2"></rect>
+            <circle id="Oval-141" stroke="#AE86FF" stroke-width="2" fill-opacity="0.3" fill="#AD86FF" sketch:type="MSShapeGroup" cx="12" cy="12" r="8"></circle>
+            <circle id="Oval-141-Copy" stroke="#AE86FF" stroke-width="2" sketch:type="MSShapeGroup" cx="12" cy="12" r="2"></circle>
+            <rect id="Rectangle-22" fill="#AE86FF" sketch:type="MSShapeGroup" x="11" y="0" width="2" height="4"></rect>
+            <rect id="Rectangle-22-Copy" fill="#AE86FF" sketch:type="MSShapeGroup" x="11" y="20" width="2" height="4"></rect>
+            <rect id="Rectangle-22-Copy-2" fill="#AE86FF" sketch:type="MSShapeGroup" x="20" y="11" width="4" height="2"></rect>
+            <rect id="Rectangle-22-Copy-3" fill="#AE86FF" sketch:type="MSShapeGroup" x="0" y="11" width="4" height="2"></rect>
         </g>
     </g>
 </svg>

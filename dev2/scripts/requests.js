@@ -126,3 +126,11 @@ function getSearch(resolve, reject, query){
 		resolve(JSON.parse(data))
 	})
 }
+
+function getZuerichsee(resolve, reject){
+	var url = "Zuerichsee.json"
+
+	$.get(url, function(data) {
+		resolve(data)
+	})
+}

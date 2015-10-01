@@ -311,6 +311,11 @@ body {
       body #trees .wiki a {
         text-decoration: none;
         color: #2DD693; }
+    body #trees #overviewTitle {
+      font-size: 12px;
+      color: #2DD693;
+      border-top: 1px solid #2DD693;
+      padding: 12px 0px 0px 12px; }
     body #trees #overview {
       width: 100%;
       height: 270px; }
