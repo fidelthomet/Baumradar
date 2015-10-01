@@ -41,6 +41,8 @@ function createDetails(tree) {
 	$(title + details).insertBefore(container.children(".images"))
 	$("#trees").html($(container))
 
+	updateDirection()
+
 	initOverview(tree)
 }
 

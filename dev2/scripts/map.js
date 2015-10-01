@@ -56,7 +56,7 @@ function initMap(resolve, reject) {
 		})
 
 		var center = proj4('EPSG:4326', 'EPSG:21781', state.user.location);
-		var zoom = 13;
+		var zoom = 12;
 		var extent = [420000, 30000, 900000, 350000]
 		var projection = ol.proj.get('EPSG:21781')
 		projection.setExtent([420000, 30000, 900000, 350000])
@@ -220,6 +220,7 @@ function initTrees(trees) {
 		if (!features.trees.length) {
 			feature.setStyle(treeStyles.green)
 			selectedFeature = feature
+
 		} else
 			feature.setStyle(treeStyles.lgreen)
 
@@ -293,6 +294,8 @@ function mapEvents() {
 					searchTree = null
 				}
 
+				state.tree = proj4('EPSG:21781', 'EPSG:4326', feature.getGeometry().getCoordinates())
+				
 				details(feature.getProperties().Baumnummer)
 
 				selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)

@@ -7,6 +7,7 @@ var state = {
 		heading: 0
 	},
 	lastRequest: [8.545953265970327, 47.364551977441565],
+	tree: [8.545953265970327, 47.364551977441565],
 	ready: {
 		center: false
 	},
@@ -41,8 +42,9 @@ $(function() {
 
 		Promise.all([promises.initMap, promises.getTrees]).then(function(trees, f) {
 
-			details(trees[1][0].Baumnummer)
 
+			details(trees[1][0].Baumnummer)
+			state.tree = [trees[1][0].lon, trees[1][0].lat]
 			initTrees(trees[1])
 		})
 	})
@@ -68,13 +70,6 @@ $(function() {
 	//     count++;
 	// });
 
-	$(window).resize(function() {
-		map.updateSize()
-		clearTimeout($.data(this, 'scrollTimer'));
-		$.data(this, 'scrollTimer', setTimeout(function() {
-
-		}, 250));
-	});
 
 	$("header .btBack").click(function() {
 		state.search = !state.search
@@ -144,6 +139,7 @@ function handleResults(data) {
 
 	$(".rItem").click(function() {
 		
+		state.tree = [$(this).attr("lon"),$(this).attr("lat")]
 
 		details($(this).attr("treeId"))
 

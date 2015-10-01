@@ -11,6 +11,7 @@ function initLocation(resolve, reject) {
 				}
 
 				updateUser()
+				updateDirection()
 			}
 
 			resolve()
@@ -30,10 +31,11 @@ function initLocation(resolve, reject) {
 
 			if (heading != state.user.heading) {
 				state.user.heading = heading
-				$(".dir").css("transform", "rotate(" + -state.user.heading + "deg)")
+				// $(".dir").css("transform", "rotate(" + -state.user.heading + "deg)")
 
 				if (state.ready.center) {
 					updateUser()
+					updateDirection()
 				}
 			}
 		})

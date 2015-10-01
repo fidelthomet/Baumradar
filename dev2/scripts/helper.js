@@ -44,3 +44,27 @@ function wikiThumb(img){
 	return url.join("/")
 }
 
+function updateDirection(){
+
+		var p2 = {
+			x: state.tree[1],
+			y: state.tree[0]
+		};
+
+		var p1 = {
+			x: state.user.location[1],
+			y: state.user.location[0]
+		};
+
+
+		// angle in degrees
+		var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+		angleDeg -= state.user.heading
+		console.log(angleDeg)
+		$("#trees .tree .left .dir").css("transform", "rotate(" + angleDeg + "deg)")
+
+		var dist = getDistanceFromLatLonInM(state.user.location,state.tree)
+		dist = dist < 1000 ? dist + "m" : (Math.round(dist / 100)) / 10 + "km"
+
+		$("#trees .tree .left .dist").html(dist)
+}
