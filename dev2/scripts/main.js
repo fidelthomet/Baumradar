@@ -16,15 +16,18 @@ var state = {
 	trees: {},
 	treeList: [],
 	wiki: {},
-	proxy: "http://crossorigin.me/"
+	proxy: "http://crossorigin.me/",
+	satelite: false,
+	search: false,
+	searchPromise: undefined
 }
 
 $(function() {
-	
+
 
 	var promises = {}
 
-	
+
 
 	promises.initMap = new Promise(initMap)
 	promises.initLocation = new Promise(initLocation).then(function() {
@@ -48,8 +51,8 @@ $(function() {
 		state.ready.center = true
 		centerMap(state.user.location)
 		initUser()
-		$("#map").css("height", $("#map").height()+"px")
-		$("#geolocation").css("top", ($("#map").height()-64)+"px")
+		$("#map").css("height", $("#map").height() + "px")
+		$("#geolocation").css("top", ($("#map").height() - 64) + "px")
 	})
 
 	$("#geolocation").click(function() {
@@ -61,17 +64,57 @@ $(function() {
 		}
 	})
 
-// 	window.addEventListener( "scroll", function( event ) {
-//     count++;
-// });
+	// 	window.addEventListener( "scroll", function( event ) {
+	//     count++;
+	// });
 
 	$(window).resize(function() {
-		map.updateSize()	
+		map.updateSize()
 		clearTimeout($.data(this, 'scrollTimer'));
 		$.data(this, 'scrollTimer', setTimeout(function() {
-		
+
 		}, 250));
 	});
+
+	$("header .btBack").click(function() {
+		state.search = !state.search
+		$("header, #results, #trees").toggleClass("search")
+
+		if (state.search) {
+			$("header .search").removeClass("hide")
+			$("header .input").focus()
+			$("header .input").html("")
+		}
+	})
+
+	$("header .input").click(function() {
+		state.search = true
+		$("header .search").removeClass("hide")
+		$("header .input").html("")
+		$("header, #results, #trees").addClass("search")
+	})
+
+	$("header .input").on("keyup", function() {
+		if ($(this).html()) {
+			$("header .search").addClass("hide")
+
+			if ($(this).html().length >= 3) {
+				var query = $(this).html()
+				state.searchPromise = new Promise(function(resolve, reject) {
+					getSearch(resolve, reject, query)
+				})
+
+				Promise.all([state.searchPromise]).then(function(data) {
+					handleResults(data[0])
+				})
+			} else {
+				$("#results #rInner").html("")
+			}
+
+		} else {
+			$("header .search").removeClass("hide")
+		}
+	})
 
 })
 
@@ -87,4 +130,43 @@ function checkForReload(mapCenter) {
 			updateTrees(trees)
 		})
 	}
+}
+
+function handleResults(data) {
+	$("#results #rInner").html("")
+	var resultTemplate = '<div class="rItem" treeId="{Baumnummer}" lon="{lon}" lat="{lat}"><div class="rTitle">{Baumname_D}</div><div class="rLat">{Baumname_LAT}</div><div class="rDetails">{distance} · {Strasse} · {Quartier}</div></div>'
+	data.forEach(function(tree) {
+
+		tree.distance = tree.dist < 1000 ? tree.dist + "m" : (Math.round(tree.dist / 100)) / 10 + "km"
+
+		$("#results #rInner").append(template(resultTemplate, tree))
+	})
+
+	$(".rItem").click(function() {
+		
+
+		details($(this).attr("treeId"))
+
+		createSearchTree([$(this).attr("lon"),$(this).attr("lat")])
+
+		selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+
+
+		// selectedFeature = feature
+		// feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
+
+		var pan = ol.animation.pan({
+			duration: 400,
+			source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
+		});
+		map.beforeRender(pan);
+		centerMap([$(this).attr("lon"),$(this).attr("lat")]);
+		hideSearch()
+
+	})
+}
+
+function hideSearch(){
+	state.search = !state.search
+	$("header, #results, #trees").removeClass("search")
 }

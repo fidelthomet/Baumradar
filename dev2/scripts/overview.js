@@ -62,7 +62,6 @@ function initOverview(tree) {
 
 
 
-		console.log("ththe")
 		overview = new ol.Map({
 			layers: [layer],
 			target: 'overview',
@@ -93,8 +92,6 @@ function updateOverview() {
 }
 
 function createTreeLayer(locations, tree) {
-
-	console.log(1)
 	var style = new ol.style.Style({
 		image: new ol.style.Circle({
 			radius: 2,
@@ -106,9 +103,9 @@ function createTreeLayer(locations, tree) {
 
 	var styleActive = new ol.style.Style({
 		image: new ol.style.Circle({
-			radius: 2,
+			radius: 3,
 			fill: new ol.style.Fill({
-				color: '#D62D98'
+				color: '#FF87D9'
 			})
 		}),
 	});
@@ -125,7 +122,7 @@ function createTreeLayer(locations, tree) {
 	})
 
 	var feature = new ol.Feature({
-		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:3857', [tree.lon, tree.lat]))
+		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:3857', state.user.location))
 	})
 	feature.setStyle(styleActive)
 	tFeatures.push(feature)

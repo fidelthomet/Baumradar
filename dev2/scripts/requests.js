@@ -58,7 +58,7 @@ function getWiki(resolve, reject, wikimediaCat) {
 			var url = state.proxy + "https://commons.wikimedia.org/w/api.php?action=query&titles=" + titles + "&prop=imageinfo&iiprop=url|size|extmetadata&format=json&rawcontinue"
 
 			$.get(url, function(data) {
-				console.log(data)
+				
 				var imgs = []
 				if(!data.query){
 					res()
@@ -86,7 +86,7 @@ function getWiki(resolve, reject, wikimediaCat) {
 		var url = state.proxy + "https://de.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=4&exintro=&explaintext=&iwurl=&rawcontinue=&titles=" + wikimediaCat + "&redirects="
 
 		$.get(url, function(data) {
-			console.log(data)
+			
 			var url = "https://de.wikipedia.org/wiki/" + data.query.pages[Object.keys(data.query.pages)[0]].title
 			var extract = data.query.pages[Object.keys(data.query.pages)[0]].extract
 
@@ -114,6 +114,15 @@ function getLocations(resolve, reject, name){
 	var url = "http://api.flaneur.io/baumkataster/trees/Baumname_LAT="+name
 
 	$.get(url, function(data) {
+		resolve(JSON.parse(data))
+	})
+}
+
+function getSearch(resolve, reject, query){
+	var url = "http://api.flaneur.io/baumkataster/search/"+query+"/limit=20&lon="+state.user.location[0]+"&lat="+state.user.location[1]
+	
+	$.get(url, function(data) {
+		
 		resolve(JSON.parse(data))
 	})
 }

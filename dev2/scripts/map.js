@@ -1,11 +1,18 @@
-var map, baseLayers = [], treeLayer,
-	features = {}, treeStyles = {}
+var map, baseLayers = [],
+	treeLayer = new ol.layer.Vector(),
+	features = {},
+	treeStyles = {},
+	userStyles = {},
+	selectedFeature,
+	searchTree
+
+
 
 function initMap(resolve, reject) {
 	// resolve()
 	// return
 	// WMTS Server Eigenschaften abfragen. Hier wird ein Proxy benötigt: https://cors-proxy.xiala.net/
-	var wmtsUrl = state.proxy+'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
+	var wmtsUrl = state.proxy + 'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
 
 	$.get(wmtsUrl).success(function(data) {
 
@@ -30,14 +37,14 @@ function initMap(resolve, reject) {
 				extent: extent,
 				source: new ol.source.WMTS(options),
 				visible: layer.Identifier == "UebersichtsplanAktuell",
-				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.3 : 1
+				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.17 : 1
 			})
 
 			var olLayerPreview = new ol.layer.Tile({
 				extent: extent,
 				source: new ol.source.WMTS(options),
 				visible: layer.Identifier != "UebersichtsplanAktuell",
-				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.3 : 1,
+				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.17 : 1,
 			})
 
 			baseLayers.push(olLayer)
@@ -64,7 +71,7 @@ function initMap(resolve, reject) {
 
 		// Create Map
 		map = new ol.Map({
-			layers: baseLayers,
+			layers: [baseLayers[0], baseLayers[1], treeLayer, baseLayers[2], baseLayers[3]],
 			target: 'map',
 			view: view,
 			interactions: ol.interaction.defaults({
@@ -136,6 +143,11 @@ function initMap(resolve, reject) {
 }
 
 function centerMap(center) {
+	var pan = ol.animation.pan({
+		duration: 400,
+		source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
+	});
+	map.beforeRender(pan);
 	map.getView().setCenter(proj4('EPSG:4326', 'EPSG:21781', center))
 }
 
@@ -152,13 +164,19 @@ function initUser() {
 		source: source
 	});
 
-	var style = new ol.style.Style({
+	userStyles.green = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/user-dir.svg'
+			src: 'svg/user-dir-accent.svg'
 		}))
 	});
 
-	features.user.setStyle(style);
+	userStyles.white = new ol.style.Style({
+		image: new ol.style.Icon(({
+			src: 'svg/user-dir-accent.svg'
+		}))
+	});
+
+	features.user.setStyle(userStyles.green);
 
 	map.addLayer(layer)
 }
@@ -168,13 +186,27 @@ function initTrees(trees) {
 
 	treeStyles.lgreen = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/tree-green-light.svg'
+			src: 'svg/tree-green.svg',
+			opacity: .5
 		}))
 	});
 
 	treeStyles.green = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/tree-green.svg'
+			src: 'svg/tree-green-active.svg'
+		}))
+	});
+
+	treeStyles.lwhite = new ol.style.Style({
+		image: new ol.style.Icon(({
+			src: 'svg/tree-white.svg',
+			opacity: .6
+		}))
+	});
+
+	treeStyles.white = new ol.style.Style({
+		image: new ol.style.Icon(({
+			src: 'svg/tree-white-active.svg'
 		}))
 	});
 
@@ -185,10 +217,11 @@ function initTrees(trees) {
 			dist: parseInt(tree.distance),
 			Baumnummer: tree.Baumnummer
 		})
-		if(!features.trees.length)
-			feature.setStyle(treeStyles.green);
-		else
-			feature.setStyle(treeStyles.lgreen);
+		if (!features.trees.length) {
+			feature.setStyle(treeStyles.green)
+			selectedFeature = feature
+		} else
+			feature.setStyle(treeStyles.lgreen)
 
 		features.trees.push(feature)
 	})
@@ -197,11 +230,7 @@ function initTrees(trees) {
 		features: features.trees
 	})
 
-	treeLayer = new ol.layer.Vector({
-		source: source
-	})
-
-	map.addLayer(treeLayer)
+	treeLayer.setSource(source)
 }
 
 function updateUser() {
@@ -220,9 +249,9 @@ function updateTrees(trees) {
 			dist: parseInt(tree.distance),
 			Baumnummer: tree.Baumnummer
 		})
-		feature.setStyle(treeStyles.lgreen);
+		feature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen);
 		features.trees.push(feature)
-		
+
 		newFeatures.push(feature)
 
 	})
@@ -230,9 +259,19 @@ function updateTrees(trees) {
 }
 
 function switchMaps() {
+	state.satelite = !state.satelite
+
 	baseLayers.forEach(function(layer) {
 		layer.setVisible(!layer.getVisible())
 	})
+
+	features.trees.forEach(function(item) {
+		item.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+	})
+	selectedFeature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
+
+	features.user.setStyle(state.satelite ? userStyles.white : userStyles.green)
+
 	$("body").toggleClass("satelite")
 }
 
@@ -248,13 +287,31 @@ function mapEvents() {
 				return feature;
 			});
 		if (feature) {
-			details(feature.getProperties().Baumnummer)
-			features.trees.forEach(function (item){
-				item.setStyle(treeStyles.lgreen)
-			})
-			feature.setStyle(treeStyles.green)
+			if (feature.getProperties().Baumnummer) {
+				if (searchTree) {
+					treeLayer.getSource().removeFeature(searchTree)
+					searchTree = null
+				}
+
+				details(feature.getProperties().Baumnummer)
+
+				selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+
+
+				selectedFeature = feature
+				feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
+
+				var pan = ol.animation.pan({
+					duration: 400,
+					source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
+				});
+				map.beforeRender(pan);
+				map.getView().setCenter(feature.getGeometry().getCoordinates());
+
+
+			}
 		} else {
-			
+
 		}
 	});
 
@@ -268,4 +325,16 @@ function mapEvents() {
 		state.watchposition = false;
 		checkForReload(proj4('EPSG:21781', 'EPSG:4326', map.getView().getCenter()))
 	});
+}
+
+function createSearchTree(location) {
+	if (searchTree) {
+		treeLayer.getSource().removeFeature(searchTree)
+	}
+	searchTree = new ol.Feature({
+		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
+	})
+	searchTree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
+
+	treeLayer.getSource().addFeature(searchTree)
 }

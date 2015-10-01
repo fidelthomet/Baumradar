@@ -1,26 +1,154 @@
 body {
   margin: 0px;
   font-family: "aktiv-grotesk", sans-serif;
+  font-weight: 300;
   background: #fff; }
-  body header .title {
+  body header {
     position: fixed;
-    height: 32px;
-    left: 0px;
-    right: 48px;
-    padding: 8px 12px;
-    font-size: 24px;
-    font-weight: 700;
-    color: #2DD693; }
-  body header .hamburger {
-    position: fixed;
-    right: 0px;
-    top: 0px;
-    width: 48px;
     height: 48px;
-    background: center center no-repeat;
-    background-image: url(svg/hamburger-green.svg); }
-  body #map {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    transition: all .4s;
+    background: #fff;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.4);
+    -webkit-tap-highlight-color: transparent; }
+    body header .btSearch {
+      position: fixed;
+      transition: all .4s;
+      width: 48px;
+      height: 48px;
+      left: 6px;
+      cursor: pointer;
+      background: url("svg/bt-search.svg") center center no-repeat; }
+    body header .btBack {
+      position: fixed;
+      transition: all .4s;
+      width: 48px;
+      height: 48px;
+      left: 6px;
+      cursor: pointer;
+      opacity: 0;
+      background: url("svg/bt-back.svg") center center no-repeat; }
+    body header .btOpt {
+      position: fixed;
+      transition: all .4s;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      right: 6px;
+      background: url("svg/bt-opt.svg") center center no-repeat; }
+    body header .title {
+      pointer-events: none;
+      position: fixed;
+      height: 32px;
+      left: 0px;
+      right: 48px;
+      padding: 8px 12px;
+      font-size: 24px;
+      font-weight: 500;
+      color: #2DD693;
+      transition: all .4s;
+      left: 40px; }
+    body header .input {
+      font-family: inherit;
+      position: fixed;
+      height: 32px;
+      left: 52px;
+      outline: none;
+      right: 52px;
+      padding: 8px 0px;
+      font-size: 24px;
+      font-weight: 500;
+      color: #fff;
+      background: transparent;
+      opacity: 0;
+      border: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none; }
+    body header .search {
+      pointer-events: none;
+      position: fixed;
+      height: 32px;
+      left: 20px;
+      right: 0px;
+      padding: 8px 12px;
+      font-size: 24px;
+      font-weight: 500;
+      color: #fff;
+      transition: all .4s;
+      opacity: 0; }
+      body header .search .sub {
+        pointer-events: none;
+        font-size: 12px;
+        font-weight: 300; }
+    body header .hamburger {
+      position: fixed;
+      right: 0px;
+      top: 0px;
+      width: 48px;
+      height: 48px;
+      background: center center no-repeat;
+      background-image: url(svg/hamburger-green.svg);
+      transition: all .4s; }
+    body header.search {
+      background: #2DD693;
+      box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.6); }
+      body header.search .btSearch {
+        opacity: 0; }
+      body header.search .btOpt {
+        opacity: 0; }
+      body header.search .btBack {
+        opacity: 1;
+        left: 6px; }
+      body header.search .title {
+        opacity: 1;
+        left: 60px; }
+      body header.search .input {
+        opacity: 1; }
+      body header.search .search {
+        opacity: .7;
+        left: 40px; }
+        body header.search .search.hide {
+          opacity: 0; }
+  body #results {
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
+    top: 54px;
+    left: 0;
+    width: 100%;
+    bottom: 0px;
     z-index: -1;
+    transition: all .4s;
+    opacity: 0;
+    pointer-events: none; }
+    body #results.search {
+      opacity: 1;
+      pointer-events: all; }
+    body #results #rInner {
+      background: #fff;
+      margin: 6px 6px 0px 6px;
+      box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5); }
+      body #results #rInner .rItem {
+        height: 55px;
+        border-bottom: 1px solid #E2E2E2;
+        padding: 8px 12px; }
+        body #results #rInner .rItem:last-of-type {
+          border: none; }
+        body #results #rInner .rItem div {
+          font-size: 12px;
+          font-weight: 300;
+          white-space: nowrap;
+          overflow: hidden;
+          margin-bottom: 1px; }
+          body #results #rInner .rItem div.rTitle {
+            font-size: 16px;
+            margin-bottom: 2px;
+            color: #2DD693; }
+  body #map {
+    z-index: -2;
     position: fixed;
     top: 0px;
     left: 0px;
@@ -34,9 +162,10 @@ body {
     position: fixed;
     bottom: 160px;
     right: 80px;
-    background: #fff url(svg/geolocation.svg) center center no-repeat;
+    background: #fff url(svg/geolocation-accent.svg) center center no-repeat;
     box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
-    border-radius: 4px; }
+    border-radius: 4px;
+    z-index: -2; }
   body #trees {
     position: absolute;
     top: 100%;
@@ -45,6 +174,9 @@ body {
     background: #fff;
     min-height: 144px;
     box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.5); }
+    body #trees.search {
+      position: fixed;
+      z-index: -2; }
     body #trees .tree {
       width: 100%; }
       body #trees .tree .title {
@@ -65,14 +197,7 @@ body {
               top: 7px;
               left: 7px;
               position: absolute;
-              background: url(svg/dir.svg) center center no-repeat; }
-            body #trees .tree .title .left.left .num, body #trees .tree .title .border.left .num {
-              color: #2DD693;
-              font-weight: 700;
-              position: absolute;
-              text-align: center;
-              top: 16px;
-              width: 48px; }
+              background: url(svg/dir-white.svg) center center no-repeat; }
             body #trees .tree .title .left.left .dist, body #trees .tree .title .border.left .dist {
               position: absolute;
               text-align: center;
@@ -87,12 +212,13 @@ body {
             background: #fff; }
         body #trees .tree .title .right {
           margin-left: 49px;
-          padding: 6px 10px; }
+          padding: 6px 5px 6px 10px; }
           body #trees .tree .title .right .ger {
             font-size: 24px;
             line-height: 26px;
             margin-bottom: 5px;
-            margin-top: 3px; }
+            margin-top: 3px;
+            font-weight: 500; }
           body #trees .tree .title .right .lat {
             margin-bottom: 3px; }
     body #trees .details {
@@ -188,9 +314,5 @@ body {
     body #trees #overview {
       width: 100%;
       height: 270px; }
-  body.satelite header .title {
-    color: #fff; }
-  body.satelite header .hamburger {
-    background-image: url(svg/hamburger-white.svg); }
 
 /*# sourceMappingURL=style.css.map */

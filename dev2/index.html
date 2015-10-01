@@ -33,10 +33,18 @@
 <body>
 	<header>
 		<div class="v-map">
+			<div class="btSearch"></div>
+			<div class="btBack"></div>
 			<div class="title">Zürcher Bäume</div>
-			<div class="hamburger"></div>
+			<div class="search">Suche <span class="sub">nach Bäumen oder Strassen</span></div>
+			<div contentEditable="true" class="input"></div>
+			<div class="btOpt"></div>
 		</div>
 	</header>
+	<div id="results">
+		<div id="rInner">
+		</div>
+	</div>
 	<div id="map"></div>
 	<div id="geolocation"></div>
 	<div id="trees">
