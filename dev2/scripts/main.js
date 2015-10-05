@@ -28,24 +28,23 @@ var state = {
 
 $(function() {
 
+	var initPromises = []
+	initPromises.push(new Promise(initMap))
+	initPromises.push(new Promise(initLocation))
 
-	var promises = {}
-
-
-
-	promises.initMap = new Promise(initMap)
-	promises.initLocation = new Promise(initLocation)
-
-	Promise.all([promises.initMap, promises.initLocation]).then(function() {
+	Promise.all(initPromises).then(function() {
 		state.ready.center = true
-		centerMap(state.user.location)
+		panTo(state.user.location)
 		
 		new Promise(checkForReload).then(function(trees){
 			var sortedTrees = sortTreesByDistance(trees)
 
 			details(sortedTrees[0].Baumnummer)
-			createSearchTree([sortedTrees[0].lon, sortedTrees[0].lat])
+			
+			addSelectedTree([sortedTrees[0].lon, sortedTrees[0].lat])
 			state.tree = [sortedTrees[0].lon, sortedTrees[0].lat]
+			$("#loading").css("opacity", 0)
+			$("#loading").css("pointer-events", "none")
 		})
 
 		initUser()
@@ -56,15 +55,10 @@ $(function() {
 	$("#geolocation").click(function() {
 		state.watchposition = true
 		if (state.ready.center) {
-			centerMap(state.user.location)
+			panTo(state.user.location)
 			updateUser()
-				// Rearrange Trees & Numbers
 		}
 	})
-
-	// 	window.addEventListener( "scroll", function( event ) {
-	//     count++;
-	// });
 
 
 	$("header .btBack").click(function() {
@@ -76,6 +70,14 @@ $(function() {
 			$("header .input").focus()
 			$("header .input").html("")
 		}
+	})
+
+	$("header .btOpt").click(function() {
+		$("#info").addClass("active")
+	})
+
+	$("#info .close").click(function() {
+		$("#info").addClass("active")
 	})
 
 	$("header .input").click(function() {
@@ -100,9 +102,21 @@ $(function() {
 		}
 	})
 
+	$("#imgDetail .close").click(function(){
+		$("#imgDetail").removeClass("active")
+	})
+
+	$("#info .close").click(function(){
+		$("#info").removeClass("active")
+	})
+
+
 })
 
 function checkForReload(resolve, reject) {
+	if(!state.ready.center)
+		return
+
 	var tiles = generateTiles(map.getView().calculateExtent(map.getSize()))
 
 	var tilePromises = []
@@ -118,6 +132,7 @@ function checkForReload(resolve, reject) {
 	})
 
 	Promise.all(tilePromises).then(function(trees){
+
 		var allTrees = []
 
 		trees.forEach(function(array){
@@ -125,9 +140,8 @@ function checkForReload(resolve, reject) {
 				allTrees.push(item)
 			})
 		})
-
+		
 		updateTrees(allTrees)
-
 		resolve(allTrees)
 	})
 }

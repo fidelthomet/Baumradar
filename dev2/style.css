@@ -322,5 +322,127 @@ body {
       width: 100%;
       height: 270px;
       pointer-events: none; }
+  body #imgDetail {
+    background: #000 center center no-repeat;
+    background-size: contain;
+    position: fixed;
+    width: 100%;
+    opacity: 0;
+    height: 100%;
+    z-index: 500;
+    pointer-events: none;
+    transition: opacity .4s; }
+    body #imgDetail.active {
+      opacity: 1;
+      pointer-events: all; }
+    body #imgDetail .close {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      background: url(svg/close2.svg) center center no-repeat;
+      right: 0px;
+      top: 0px; }
+    body #imgDetail .licence {
+      position: fixed;
+      background-color: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      padding: 12px;
+      bottom: 0px;
+      font-size: 12px;
+      color: #fff; }
+  body #loading {
+    position: fixed;
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 750;
+    transition: opacity .4s; }
+    body #loading .animate {
+      background: url(svg/tree-green.svg) center center no-repeat;
+      animation-name: ani1;
+      animation-iteration-count: infinite;
+      position: fixed;
+      height: 30px;
+      width: 30px;
+      top: 50%;
+      left: 50%; }
+    body #loading .animate1 {
+      animation-duration: 3s;
+      margin-top: -15px;
+      margin-left: -15px; }
+    body #loading .animate2 {
+      animation-duration: 4s;
+      margin-top: -15px;
+      margin-left: -50px;
+      animation-name: ani2; }
+    body #loading .animate3 {
+      animation-duration: 2.5s;
+      margin-top: -15px;
+      margin-left: 20px;
+      animation-name: ani2; }
+    body #loading .animate4 {
+      animation-duration: 3.2s;
+      margin-top: -50px;
+      margin-left: -15px; }
+    body #loading .animate5 {
+      animation-duration: 5s;
+      margin-top: -50px;
+      margin-left: -50px; }
+    body #loading .animate6 {
+      animation-duration: 1.5s;
+      margin-top: -50px;
+      animation-name: ani2;
+      margin-left: 20px; }
+    body #loading .animate7 {
+      animation-duration: 2.8s;
+      margin-top: 20px;
+      margin-left: -15px; }
+    body #loading .animate8 {
+      animation-duration: 4s;
+      margin-top: 20px;
+      margin-left: -50px; }
+    body #loading .animate9 {
+      animation-duration: 1.7s;
+      animation-name: ani2;
+      margin-top: 20px;
+      margin-left: 20px; }
+  body #info {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s; }
+    body #info.active {
+      opacity: 1;
+      pointer-events: all; }
+    body #info .close {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      background: url(svg/close-black.svg) center center no-repeat;
+      right: 0px;
+      top: 0px; }
+    body #info .text {
+      font-size: 12px;
+      padding: 60px 24px 0px; }
+
+@keyframes ani1 {
+  0% {
+    opacity: 0; }
+  50% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+@keyframes ani2 {
+  0% {
+    opacity: 1; }
+  75% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
 
 /*# sourceMappingURL=style.css.map */

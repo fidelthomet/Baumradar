@@ -1,13 +1,13 @@
 function makeSearch(query) {
-	state.searchTreesP = new Promise(function(resolve, reject) {
-		searchTrees(resolve, reject, query)
+	state.tempTreesP = new Promise(function(resolve, reject) {
+		tempTrees(resolve, reject, query)
 	})
-
+	
 	state.searchAddressesP = new Promise(function(resolve, reject) {
 		searchAddresses(resolve, reject, query)
 	})
 
-	Promise.all([state.searchTreesP, state.searchAddressesP]).then(function(data) {
+	Promise.all([state.tempTreesP, state.searchAddressesP]).then(function(data) {
 		handleResults(data)
 	})
 }
@@ -29,25 +29,22 @@ function handleResults(data) {
 
 		details($(this).attr("treeId"))
 
-		createSearchTree([$(this).attr("lon"), $(this).attr("lat")])
-
 		selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+		addSelectedTree([$(this).attr("lon"), $(this).attr("lat")])
 
-
-		// selectedFeature = feature
-		// feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
-
+		state.watchposition = false;
+		
 		var pan = ol.animation.pan({
 			duration: 400,
 			source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
 		});
 		map.beforeRender(pan);
-		centerMap([$(this).attr("lon"), $(this).attr("lat")]);
+		panTo([$(this).attr("lon"), $(this).attr("lat")]);
 		hideSearch()
 
 	})
 
-	var resultTemplate = '<div class="rAddressItem" lon="{lon}" lat="{lat}"><div class="rTitle">{Adresse}</div><div class="rDetails">{distance} · {PLZ} · {StatQuartier}</div></div>'
+	resultTemplate = '<div class="rAddressItem" lon="{lon}" lat="{lat}"><div class="rTitle">{Adresse}</div><div class="rDetails">{distance} · {PLZ} · {StatQuartier}</div></div>'
 	data[1].forEach(function(address) {
 
 		var dist = getDistanceFromLatLonInM([address.lon, address.lat], state.user.location)
@@ -61,6 +58,8 @@ function handleResults(data) {
 			userLayer.getSource().removeFeature(activeAddress)
 		}
 
+		state.watchposition = false;
+
 		activeAddress = new ol.Feature({
 			geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [$(this).attr("lon"), $(this).attr("lat")]))
 		});
@@ -72,7 +71,6 @@ function handleResults(data) {
 		});
 
 		activeAddress.setStyle(style)
-
 		userLayer.getSource().addFeature(activeAddress)
 
 		var pan = ol.animation.pan({
@@ -80,7 +78,7 @@ function handleResults(data) {
 			source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
 		});
 		map.beforeRender(pan);
-		centerMap([$(this).attr("lon"), $(this).attr("lat")]);
+		panTo([$(this).attr("lon"), $(this).attr("lat")]);
 		hideSearch()
 	})
 }

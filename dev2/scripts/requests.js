@@ -129,7 +129,7 @@ function getLocations(resolve, reject, name){
 	})
 }
 
-function searchTrees(resolve, reject, query){
+function tempTrees(resolve, reject, query){
 	var url = "http://api.flaneur.io/baumkataster/search/"+query+"/limit=15&lon="+state.user.location[0]+"&lat="+state.user.location[1]
 	
 	$.get(url, function(data) {

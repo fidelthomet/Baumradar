@@ -7,7 +7,7 @@ function initLocation(resolve, reject) {
 
 			if (state.ready.center) {
 				if (state.watchposition) {
-					centerMap(state.user.location)
+					panTo(state.user.location)
 				}
 
 				updateUser()
