@@ -20,7 +20,10 @@ var state = {
 	proxy: "http://crossorigin.me/",
 	satelite: false,
 	search: false,
-	searchPromise: undefined
+	searchTreesP: undefined,
+	searchAddressesP: undefined,
+	tileSize: 200,
+	tiles: []
 }
 
 $(function() {
@@ -31,30 +34,23 @@ $(function() {
 
 
 	promises.initMap = new Promise(initMap)
-	promises.initLocation = new Promise(initLocation).then(function() {
-		promises.getTrees = new Promise(
-			function(resolve, reject) {
-				getTrees(resolve, reject, {
-					location: state.user.location
-				})
-			}
-		)
-
-		Promise.all([promises.initMap, promises.getTrees]).then(function(trees, f) {
-
-
-			details(trees[1][0].Baumnummer)
-			state.tree = [trees[1][0].lon, trees[1][0].lat]
-			initTrees(trees[1])
-		})
-	})
+	promises.initLocation = new Promise(initLocation)
 
 	Promise.all([promises.initMap, promises.initLocation]).then(function() {
 		state.ready.center = true
 		centerMap(state.user.location)
+		
+		new Promise(checkForReload).then(function(trees){
+			var sortedTrees = sortTreesByDistance(trees)
+
+			details(sortedTrees[0].Baumnummer)
+			createSearchTree([sortedTrees[0].lon, sortedTrees[0].lat])
+			state.tree = [sortedTrees[0].lon, sortedTrees[0].lat]
+		})
+
 		initUser()
 		$("#map").css("height", $("#map").height() + "px")
-		$("#geolocation").css("top", ($("#map").height() - 64) + "px")
+		$("#geolocation").css("top", ($("#map").height() - 114) + "px")
 	})
 
 	$("#geolocation").click(function() {
@@ -94,14 +90,7 @@ $(function() {
 			$("header .search").addClass("hide")
 
 			if ($(this).html().length >= 3) {
-				var query = $(this).html()
-				state.searchPromise = new Promise(function(resolve, reject) {
-					getSearch(resolve, reject, query)
-				})
-
-				Promise.all([state.searchPromise]).then(function(data) {
-					handleResults(data[0])
-				})
+				makeSearch($(this).html())
 			} else {
 				$("#results #rInner").html("")
 			}
@@ -113,56 +102,73 @@ $(function() {
 
 })
 
-function checkForReload(mapCenter) {
-	if (getDistanceFromLatLonInM(state.lastRequest, mapCenter) > state.params.r - 50) {
-		new Promise(
-			function(resolve, reject) {
-				getTrees(resolve, reject, {
-					location: mapCenter
-				})
-			}
-		).then(function(trees) {
-			updateTrees(trees)
+function checkForReload(resolve, reject) {
+	var tiles = generateTiles(map.getView().calculateExtent(map.getSize()))
+
+	var tilePromises = []
+	tiles.forEach(function(tile) {
+		if (state.tiles.indexOf(tile[0] + "-" + tile[1]) == -1) {
+			state.tiles.push(tile[0] + "-" + tile[1])
+			tilePromises.push(new Promise(
+				function(resolve, reject) {
+					getTreeTile(resolve, reject, tile)
+				}
+			))
+		}
+	})
+
+	Promise.all(tilePromises).then(function(trees){
+		var allTrees = []
+
+		trees.forEach(function(array){
+			array.forEach(function(item){
+				allTrees.push(item)
+			})
 		})
+
+		updateTrees(allTrees)
+
+		resolve(allTrees)
+	})
+}
+
+function generateTiles(extent) {
+	extent.forEach(function(point, i) {
+		extent[i] = point - point % state.tileSize
+	})
+
+	var lons = [extent[0], extent[2]]
+
+	if (!(lons[1] - lons[0]) / state.tileSize) {
+		lons = [lons[0]]
+	} else {
+		for (var i = 1; i < (lons[1] - lons[0]) / state.tileSize; i++) {
+			lons.push(lons[0] + state.tileSize * i)
+		}
 	}
-}
 
-function handleResults(data) {
-	$("#results #rInner").html("")
-	var resultTemplate = '<div class="rItem" treeId="{Baumnummer}" lon="{lon}" lat="{lat}"><div class="rTitle">{Baumname_D}</div><div class="rLat">{Baumname_LAT}</div><div class="rDetails">{distance} · {Strasse} · {Quartier}</div></div>'
-	data.forEach(function(tree) {
+	var lats = [extent[1], extent[3]]
+	if (!(lats[1] - lats[0]) / state.tileSize) {
+		lats = [lats[0]]
+	} else {
+		for (var i = 1; i < (lats[1] - lats[0]) / state.tileSize; i++) {
+			lats.push(lats[0] + state.tileSize * i)
+		}
+	}
 
-		tree.distance = tree.dist < 1000 ? tree.dist + "m" : (Math.round(tree.dist / 100)) / 10 + "km"
-
-		$("#results #rInner").append(template(resultTemplate, tree))
+	var tiles = []
+	lons.forEach(function(lon) {
+		lats.forEach(function(lat) {
+			var coord1 = proj4('EPSG:21781', 'EPSG:4326', [lon, lat])
+			var coord2 = proj4('EPSG:21781', 'EPSG:4326', [lon + state.tileSize, lat + state.tileSize])
+			tiles.push([coord1[0],coord1[1],coord2[0],coord2[1]])
+		})
 	})
 
-	$(".rItem").click(function() {
-		
-		state.tree = [$(this).attr("lon"),$(this).attr("lat")]
-
-		details($(this).attr("treeId"))
-
-		createSearchTree([$(this).attr("lon"),$(this).attr("lat")])
-
-		selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
-
-
-		// selectedFeature = feature
-		// feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
-
-		var pan = ol.animation.pan({
-			duration: 400,
-			source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
-		});
-		map.beforeRender(pan);
-		centerMap([$(this).attr("lon"),$(this).attr("lat")]);
-		hideSearch()
-
-	})
+	return tiles
 }
 
-function hideSearch(){
+function hideSearch() {
 	state.search = !state.search
 	$("header, #results, #trees").removeClass("search")
 }

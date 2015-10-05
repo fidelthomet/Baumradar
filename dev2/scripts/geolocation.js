@@ -24,18 +24,18 @@ function initLocation(resolve, reject) {
 		window.addEventListener('deviceorientation', function(eventData) {
 
 			var heading
-			if (event.webkitCompassHeading)
+			if (event.webkitCompassHeading) {
+				state.compass = true
 				heading = event.webkitCompassHeading
-			else
-				heading = event.alpha
 
-			if (heading != state.user.heading) {
-				state.user.heading = heading
-				// $(".dir").css("transform", "rotate(" + -state.user.heading + "deg)")
+				if (heading != state.user.heading) {
+					state.user.heading = heading
+						// $(".dir").css("transform", "rotate(" + -state.user.heading + "deg)")
 
-				if (state.ready.center) {
-					updateUser()
-					updateDirection()
+					if (state.ready.center) {
+						updateUser()
+						updateDirection()
+					}
 				}
 			}
 		})

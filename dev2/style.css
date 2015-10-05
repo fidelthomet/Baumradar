@@ -131,19 +131,21 @@ body {
       background: #fff;
       margin: 6px 6px 0px 6px;
       box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5); }
-      body #results #rInner .rItem {
+      body #results #rInner .rTreeItem, body #results #rInner .rAddressItem {
         height: 55px;
         border-bottom: 1px solid #E2E2E2;
         padding: 8px 12px; }
-        body #results #rInner .rItem:last-of-type {
+        body #results #rInner .rTreeItem.rAddressItem, body #results #rInner .rAddressItem.rAddressItem {
+          height: 37px; }
+        body #results #rInner .rTreeItem:last-of-type, body #results #rInner .rAddressItem:last-of-type {
           border: none; }
-        body #results #rInner .rItem div {
+        body #results #rInner .rTreeItem div, body #results #rInner .rAddressItem div {
           font-size: 12px;
           font-weight: 300;
           white-space: nowrap;
           overflow: hidden;
           margin-bottom: 1px; }
-          body #results #rInner .rItem div.rTitle {
+          body #results #rInner .rTreeItem div.rTitle, body #results #rInner .rAddressItem div.rTitle {
             font-size: 16px;
             margin-bottom: 2px;
             color: #2DD693; }
@@ -153,7 +155,7 @@ body {
     top: 0px;
     left: 0px;
     width: 100%;
-    bottom: 144px;
+    bottom: 60px;
     background: #fff;
     -webkit-tap-highlight-color: transparent; }
   body #geolocation {
@@ -161,15 +163,15 @@ body {
     height: 48px;
     position: fixed;
     bottom: 160px;
-    right: 80px;
+    right: 60px;
     background: #fff url(svg/geolocation-accent.svg) center center no-repeat;
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
     z-index: -2; }
   body #trees {
     position: absolute;
     top: 100%;
-    margin-top: -144px;
+    margin-top: -120px;
     width: 100%;
     background: #fff;
     min-height: 144px;
@@ -318,6 +320,7 @@ body {
       padding: 12px 0px 0px 12px; }
     body #trees #overview {
       width: 100%;
-      height: 270px; }
+      height: 270px;
+      pointer-events: none; }
 
 /*# sourceMappingURL=style.css.map */

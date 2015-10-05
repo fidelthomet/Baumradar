@@ -1,10 +1,12 @@
 var map, baseLayers = [],
 	treeLayer = new ol.layer.Vector(),
+	userLayer = new ol.layer.Vector(),
 	features = {},
 	treeStyles = {},
 	userStyles = {},
 	selectedFeature,
-	searchTree
+	searchTree,
+	activeAddress
 
 
 
@@ -37,14 +39,14 @@ function initMap(resolve, reject) {
 				extent: extent,
 				source: new ol.source.WMTS(options),
 				visible: layer.Identifier == "UebersichtsplanAktuell",
-				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.17 : 1
+				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.22 : 1
 			})
 
 			var olLayerPreview = new ol.layer.Tile({
 				extent: extent,
 				source: new ol.source.WMTS(options),
 				visible: layer.Identifier != "UebersichtsplanAktuell",
-				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.17 : 1,
+				opacity: layer.Identifier == "UebersichtsplanAktuell" ? 0.44 : 1,
 			})
 
 			baseLayers.push(olLayer)
@@ -65,13 +67,13 @@ function initMap(resolve, reject) {
 			projection: projection,
 			center: center,
 			zoom: zoom,
-			minZoom: 12,
+			minZoom: 10,
 			maxZoom: 15
 		})
 
 		// Create Map
 		map = new ol.Map({
-			layers: [baseLayers[0], baseLayers[1], treeLayer, baseLayers[2], baseLayers[3]],
+			layers: [baseLayers[0], baseLayers[1], userLayer, treeLayer, baseLayers[2], baseLayers[3]],
 			target: 'map',
 			view: view,
 			interactions: ol.interaction.defaults({
@@ -90,37 +92,37 @@ function initMap(resolve, reject) {
 			layer.on('precompose', function(event) {
 				var ctx = event.context;
 				ctx.save();
-				ctx.translate(ctx.canvas.width - 64 * window.devicePixelRatio, ctx.canvas.height - 64 * window.devicePixelRatio);
+				ctx.translate(ctx.canvas.width - 54 * window.devicePixelRatio, ctx.canvas.height - 114 * window.devicePixelRatio);
 				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 				ctx.fillStyle = "rgb(255,255,255)";
-				ctx.shadowColor = "black";
-				ctx.shadowBlur = 10;
+				ctx.shadowColor = "rgba(0,0,0,0.5)";
+				ctx.shadowBlur = 4;
 				ctx.beginPath();
-				ctx.moveTo(4, 0);
-				ctx.lineTo(44, 0);
-				ctx.quadraticCurveTo(48, 0, 48, 4);
-				ctx.lineTo(48, 44);
-				ctx.quadraticCurveTo(48, 48, 44, 48);
-				ctx.lineTo(4, 48);
-				ctx.quadraticCurveTo(0, 48, 0, 44);
-				ctx.lineTo(0, 4);
+				ctx.moveTo(2, 0);
+				ctx.lineTo(46, 0);
+				ctx.quadraticCurveTo(48, 0, 48, 2);
+				ctx.lineTo(48, 46);
+				ctx.quadraticCurveTo(48, 48, 46, 48);
+				ctx.lineTo(2, 48);
+				ctx.quadraticCurveTo(0, 48, 0, 46);
+				ctx.lineTo(0, 2);
 				ctx.quadraticCurveTo(0, 0, 4, 0);
 				ctx.fill();
 				ctx.restore();
 				ctx.save();
 
-				ctx.translate(ctx.canvas.width - 64 * window.devicePixelRatio, ctx.canvas.height - 64 * window.devicePixelRatio);
+				ctx.translate(ctx.canvas.width - 54 * window.devicePixelRatio, ctx.canvas.height - 114 * window.devicePixelRatio);
 				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
 				ctx.beginPath();
-				ctx.moveTo(4, 0);
-				ctx.lineTo(44, 0);
-				ctx.quadraticCurveTo(48, 0, 48, 4);
-				ctx.lineTo(48, 44);
-				ctx.quadraticCurveTo(48, 48, 44, 48);
-				ctx.lineTo(4, 48);
-				ctx.quadraticCurveTo(0, 48, 0, 44);
-				ctx.lineTo(0, 4);
+				ctx.moveTo(2, 0);
+				ctx.lineTo(46, 0);
+				ctx.quadraticCurveTo(48, 0, 48, 2);
+				ctx.lineTo(48, 46);
+				ctx.quadraticCurveTo(48, 48, 46, 48);
+				ctx.lineTo(2, 48);
+				ctx.quadraticCurveTo(0, 48, 0, 46);
+				ctx.lineTo(0, 2);
 				ctx.quadraticCurveTo(0, 0, 4, 0);
 				ctx.clip();
 				ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -160,25 +162,23 @@ function initUser() {
 		features: [features.user]
 	});
 
-	var layer = new ol.layer.Vector({
-		source: source
-	});
+	userLayer.setSource(source)
 
 	userStyles.green = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/user-dir-accent.svg'
+			src: state.compass ?  'svg/user-dir-accent.svg' : 'svg/user-accent.svg'
 		}))
 	});
 
 	userStyles.white = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/user-dir-accent.svg'
+			src: state.compass ?  'svg/user-dir-accent.svg' : 'svg/user-accent.svg'
 		}))
 	});
 
 	features.user.setStyle(userStyles.green);
 
-	map.addLayer(layer)
+	// map.addLayer(layer)
 }
 
 function initTrees(trees) {
@@ -186,8 +186,10 @@ function initTrees(trees) {
 
 	treeStyles.lgreen = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/tree-green.svg',
-			opacity: .5
+			src: 'svg/tree-green.png',
+			opacity: .5,
+			scale: .5,
+			// size: [26,26]
 		}))
 	});
 
@@ -199,8 +201,9 @@ function initTrees(trees) {
 
 	treeStyles.lwhite = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/tree-white.svg',
-			opacity: .6
+			src: 'svg/tree-white.png',
+			opacity: .6,
+			scale: .5
 		}))
 	});
 
@@ -240,6 +243,10 @@ function updateUser() {
 }
 
 function updateTrees(trees) {
+	if(!features.trees){
+		initTrees(trees)
+		return
+	}
 
 	var newFeatures = []
 
@@ -279,7 +286,7 @@ function switchMaps() {
 function mapEvents() {
 	map.on('click', function(e) {
 		// Check for Map Change
-		if (e.pixel[0] > window.innerWidth - 60 && e.pixel[0] < window.innerWidth - 12 && e.pixel[1] > window.innerHeight - 204 && e.pixel[1] < window.innerHeight - 156) {
+		if (e.pixel[0] > window.innerWidth - 60 && e.pixel[0] < window.innerWidth - 12 && e.pixel[1] > window.innerHeight - 174 && e.pixel[1] < window.innerHeight - 126) {
 			switchMaps()
 		}
 

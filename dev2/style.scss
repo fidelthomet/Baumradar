@@ -178,10 +178,14 @@ body{
 			margin: 6px 6px 0px 6px;
 			box-shadow: 0px 0px 4px 0px rgba(0,0,0,.5);
 
-			.rItem{
+			.rTreeItem, .rAddressItem{
 				height: 55px;
 				border-bottom: 1px solid #E2E2E2;
 				padding: 8px 12px;
+
+				&.rAddressItem{
+					height: 37px;
+				}
 
 				&:last-of-type{
 					border: none;
@@ -210,7 +214,7 @@ body{
 		top: 0px;
 		left: 0px;
 		width: 100%;
-		bottom: 144px;
+		bottom: 60px;
 		background: #fff;
 		-webkit-tap-highlight-color: rgba(0,0,0,0);
 
@@ -221,17 +225,17 @@ body{
 		height: 48px;
 		position: fixed;
 		bottom: 160px;
-		right: 80px;
+		right: 60px;
 		background: $white url(svg/geolocation-accent.svg) center center no-repeat;
-		box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.50);
-		border-radius: 4px;
+		box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.50);
+		border-radius: 2px;
 		z-index: -2;
 	}
 
 	#trees{
 		position: absolute;
 		top: 100%;
-		margin-top: -144px;
+		margin-top: -120px;
 		width: 100%;
 		background: #fff;
 		min-height: 144px;
@@ -442,6 +446,7 @@ body{
 		#overview{
 			width: 100%;
 			height: 270px;
+			pointer-events: none;
 		}
 	}
 

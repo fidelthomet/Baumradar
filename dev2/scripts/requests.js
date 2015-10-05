@@ -28,6 +28,17 @@ function getTrees(resolve, reject, params) {
 	})
 }
 
+function getTreeTile(resolve, reject, tile) {
+	var url = "http://api.flaneur.io/baumkataster/area"
+	tile.forEach(function (item){
+		url+="/"+item
+	})
+
+	$.get(url, function(data) {
+		resolve(JSON.parse(data))
+	})
+}
+
 function getDetails(resolve, reject, tree) {
 
 	var url = "http://api.flaneur.io/baumkataster/tree/" + tree
@@ -118,11 +129,19 @@ function getLocations(resolve, reject, name){
 	})
 }
 
-function getSearch(resolve, reject, query){
-	var url = "http://api.flaneur.io/baumkataster/search/"+query+"/limit=20&lon="+state.user.location[0]+"&lat="+state.user.location[1]
+function searchTrees(resolve, reject, query){
+	var url = "http://api.flaneur.io/baumkataster/search/"+query+"/limit=15&lon="+state.user.location[0]+"&lat="+state.user.location[1]
 	
 	$.get(url, function(data) {
 		
+		resolve(JSON.parse(data))
+	})
+}
+
+function searchAddresses(resolve, reject, query){
+	var url = "http://api.flaneur.io/zadressen/search/"+query+"/limit=15"
+	
+	$.get(url, function(data) {
 		resolve(JSON.parse(data))
 	})
 }

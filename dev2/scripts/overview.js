@@ -1,4 +1,4 @@
-var overview;
+var overview, tLayer
 
 function initOverview(tree) {
 
@@ -15,35 +15,21 @@ function initOverview(tree) {
 		var districts = data[1]
 		var zuerichsee = data[2]
 		var styles = [
-			/* We are using two different styles for the polygons:
-			 *  - The first style is for the polygons themselves.
-			 *  - The second style is to draw the vertices of the polygons.
-			 *    In a custom `geometry` function the vertices of a polygon are
-			 *    returned as `MultiPoint` geometry, which will be used to render
-			 *    the style.
-			 */
 			new ol.style.Style({
 				stroke: new ol.style.Stroke({
 					color: '#C8C8C8',
 					width: .5
 				}),
-				// fill: new ol.style.Fill({
-				// 	color: 'rgba(0, 0, 255, 0.1)'
-				// })
 			}),
-			// new ol.style.Style({
-			// 	image: new ol.style.Circle({
-			// 		radius: 5,
-			// 		fill: new ol.style.Fill({
-			// 			color: 'orange'
-			// 		})
-			// 	}),
-			// 	geometry: function(feature) {
-			// 		// return the coordinates of the first ring of the polygon
-			// 		var coordinates = feature.getGeometry().getCoordinates()[0];
-			// 		return new ol.geom.MultiPoint(coordinates);
-			// 	}
-			// })
+		];
+
+		var stylesExtent = [
+			new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#FF4E92',
+					width: .5
+				}),
+			}),
 		];
 
 		var stylesLake = [
@@ -87,8 +73,52 @@ function initOverview(tree) {
 
 
 
+		var extent = map.getView().calculateExtent(map.getSize())
+
+		console.log("1")
+		var p = [
+			proj4('EPSG:21781', 'EPSG:3857', [extent[0], extent[1]]),
+			proj4('EPSG:21781', 'EPSG:3857', [extent[0], extent[3]]),
+			proj4('EPSG:21781', 'EPSG:3857', [extent[2], extent[3]]),
+			proj4('EPSG:21781', 'EPSG:3857', [extent[2], extent[1]]),
+		]
+
+		var extentGeoJson = {
+			'type': 'FeatureCollection',
+			'crs': {
+				'type': 'name',
+				'properties': {
+					'name': 'EPSG:3857'
+				}
+			},
+			'features': [{
+				'type': 'Feature',
+				'geometry': {
+					'type': 'Polygon',
+					'coordinates': [
+						p
+					]
+				}
+			}]
+		}
+
+		var sourceExtent = new ol.source.Vector({
+			features: (new ol.format.GeoJSON()).readFeatures(extentGeoJson, {
+				featureProjection: "EPSG:3857"
+			}),
+			projection: 'EPSG:3857'
+		});
+
+		var layerExtent = new ol.layer.Vector({
+			source: sourceExtent,
+			projection: 'EPSG:3857',
+			style: stylesExtent
+		});
+
+		tLayer = new ol.layer.Vector()
+
 		overview = new ol.Map({
-			layers: [layer, layerLake],
+			layers: [layer, layerLake, tLayer],
 			target: 'overview',
 			view: new ol.View({
 				center: [8.536999947103082, 47.37367243001017],
@@ -118,21 +148,29 @@ function updateOverview() {
 
 function createTreeLayer(locations, tree) {
 	var style = new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 2,
-			fill: new ol.style.Fill({
-				color: 'rgba(45,214,147,.4)'
-			})
-		}),
+		// image: new ol.style.Circle({
+		// 	radius: 1,
+		// 	fill: new ol.style.Fill({
+		// 		color: 'rgba(45,214,147,.4)'
+		// 	})
+		// }),
+
+		image: new ol.style.Icon(({
+			src: 'svg/tree-min.png',
+			opacity: .5,
+			scale: .5,
+			// size: [26,26]
+		}))
+
 	});
 
 	var styleActive = new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 3,
-			fill: new ol.style.Fill({
-				color: '#AD86FF'
-			})
-		}),
+		image: new ol.style.Icon(({
+			src: 'svg/overview-center.png',
+			// opacity: .5,
+			scale: .5,
+			// size: [26,26]
+		}))
 	});
 
 	var tFeatures = []
@@ -146,8 +184,9 @@ function createTreeLayer(locations, tree) {
 		tFeatures.push(feature)
 	})
 
+
 	var feature = new ol.Feature({
-		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:3857', state.user.location))
+		geometry: new ol.geom.Point(proj4('EPSG:21781', 'EPSG:3857', map.getView().getCenter()))
 	})
 	feature.setStyle(styleActive)
 	tFeatures.push(feature)
@@ -156,10 +195,7 @@ function createTreeLayer(locations, tree) {
 		features: tFeatures
 	})
 
-	var tLayer = new ol.layer.Vector({
-		source: source,
-		// style: style
-	})
+	tLayer.setSource(source)
 
-	overview.addLayer(tLayer)
+	// overview.addLayer(tLayer)
 }

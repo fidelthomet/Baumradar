@@ -68,3 +68,20 @@ function updateDirection(){
 
 		$("#trees .tree .left .dist").html(dist)
 }
+
+function sortTreesByDistance(trees){
+	trees.forEach(function (tree){
+		tree.dist = getDistanceFromLatLonInM([tree.lon, tree.lat], state.user.location)
+	})
+	trees.sort(sortByDist)
+
+	return trees
+}
+
+function sortByDist(a, b) {
+	if (a.dist < b.dist)
+		return -1;
+	if (a.dist > b.dist)
+		return 1;
+	return 0;
+}
