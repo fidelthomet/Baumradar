@@ -75,7 +75,6 @@ function initOverview(tree) {
 
 		var extent = map.getView().calculateExtent(map.getSize())
 
-		console.log("1")
 		var p = [
 			proj4('EPSG:21781', 'EPSG:3857', [extent[0], extent[1]]),
 			proj4('EPSG:21781', 'EPSG:3857', [extent[0], extent[3]]),

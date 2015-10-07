@@ -249,6 +249,14 @@ body{
 		.tree{
 			// position: absolute;
 			width: 100%;
+			opacity: .3;
+			transition: opacity .1s;
+			background: #fff;
+			min-height: 100%;
+
+			&.active{
+				opacity: 1;
+			}
 
 			.title{
 				position: relative;
@@ -477,8 +485,6 @@ body{
 
 		.licence{
 			position: fixed;
-			background-color: rgba(0,0,0,.5);
-			width: 100%;
 			padding: 12px;
 			bottom: 0px;
 			font-size: 12px;
@@ -486,7 +492,7 @@ body{
 		}
 	}
 
-	#loading{
+	#splashscreen{
 		position: fixed;
 		background-color: $white;
 		width: 100%;
@@ -496,7 +502,12 @@ body{
 		z-index: 750;
 		transition: opacity .4s;
 
-		.animate{
+		&.hide{
+			opacity: 0;
+			pointer-events: none;
+		}
+		
+		.ani{
 			background: url(svg/tree-green.svg) center center no-repeat;
 			animation-name: ani1;
 			animation-iteration-count: infinite;
@@ -505,60 +516,64 @@ body{
 			width: 30px;
 			top: 50%;
 			left: 50%;
+
+			&.absolute{
+				position: absolute;
+			}
 		}
 
-		.animate1{
+		.ani1{
 			animation-duration: 3s;
 			margin-top: -15px;
 			margin-left: -15px;
 		}
 
-		.animate2{
+		.ani2{
 			animation-duration: 4s;
 			margin-top: -15px;
 			margin-left: -50px;
 			animation-name: ani2;
 		}
 
-		.animate3{
+		.ani3{
 			animation-duration: 2.5s;
 			margin-top: -15px;
 			margin-left: 20px;
 			animation-name: ani2;
 		}
 
-		.animate4{
+		.ani4{
 			animation-duration: 3.2s;
 			margin-top: -50px;
 			margin-left: -15px;
 		}
 
-		.animate5{
+		.ani5{
 			animation-duration: 5s;
 			margin-top: -50px;
 			margin-left: -50px;
 		}
 
-		.animate6{
+		.ani6{
 			animation-duration: 1.5s;
 			margin-top: -50px;
 			animation-name: ani2;
 			margin-left: 20px;
 		}
 
-		.animate7{
+		.ani7{
 			animation-duration: 2.8s;
 			margin-top: 20px;
 			margin-left: -15px;
 		}
 
-		.animate8{
+		.ani8{
 			animation-duration: 4s;
 			margin-top: 20px;
 			margin-left: -50px;
 		}
 
-		.animate9{
+		.ani9{
 			animation-duration: 1.7s;
 			animation-name: ani2;
 			margin-top: 20px;
@@ -624,5 +639,37 @@ body{
 
 	100% {
 		opacity: 1;
+	}
+}
+
+@media (min-width: 800px) {
+	body{
+		header{
+			width: 380px;
+		}
+		#trees{
+			width: 380px;
+			top: 0px;
+			right: 0px;
+			margin-top: 0px;
+			height: 100%;
+			overflow: auto;
+		}
+
+		#map{
+			width: auto;
+			right: 380px;
+			left: 0px;
+			height: 100%;
+		}
+
+		#geolocation{
+			bottom: 60px;
+			left: 6px;
+		}
+
+		#results{
+			width: 392px;
+		}
 	}
 }

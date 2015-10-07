@@ -8,56 +8,68 @@ var state = {
 	},
 	lastRequest: [8.545953265970327, 47.364551977441565],
 	tree: [8.545953265970327, 47.364551977441565],
-	ready: {
-		center: false
-	},
 	params: {
 		r: 250
 	},
 	trees: {},
 	treeList: [],
 	wiki: {},
-	proxy: "http://crossorigin.me/",
+	//proxy: "http://crossorigin.me/",
+	proxy: "https://cors-proxy.xiala.net/",
 	satelite: false,
 	search: false,
 	searchTreesP: undefined,
 	searchAddressesP: undefined,
 	tileSize: 200,
-	tiles: []
+	tiles: [],
 }
 
 $(function() {
+	// Detect Mobile/Desktop Devices
+	state.desktop = document.documentElement.clientWidth >= 800 ? true : false
 
+	// initialize map (openlayers) and location (geolocation and heading)
 	var initPromises = []
 	initPromises.push(new Promise(initMap))
 	initPromises.push(new Promise(initLocation))
 
 	Promise.all(initPromises).then(function() {
-		state.ready.center = true
+
+
 		panTo(state.user.location)
+		state.ready = true
 		
-		new Promise(checkForReload).then(function(trees){
+		new Promise(checkForReload).then(function(trees) {
 			var sortedTrees = sortTreesByDistance(trees)
 
 			details(sortedTrees[0].Baumnummer)
-			
+
 			addSelectedTree([sortedTrees[0].lon, sortedTrees[0].lat])
 			state.tree = [sortedTrees[0].lon, sortedTrees[0].lat]
-			$("#loading").css("opacity", 0)
-			$("#loading").css("pointer-events", "none")
+			
+
+			$("#splashscreen").addClass("hide")
 		})
 
 		initUser()
-		$("#map").css("height", $("#map").height() + "px")
-		$("#geolocation").css("top", ($("#map").height() - 114) + "px")
+
+		if (!state.desktop) {
+			// Overwrite CSS for mobile devices (window height might change when scrolling)
+			$("#map").css("height", $("#map").height() + "px")
+			$("#geolocation").css("top", ($("#map").height() - 114) + "px")
+		}
 	})
 
 	$("#geolocation").click(function() {
 		state.watchposition = true
-		if (state.ready.center) {
+		if (state.ready) {
 			panTo(state.user.location)
 			updateUser()
 		}
+	})
+
+	$("#splashscreen").on("transitionend", function(){
+		$(this).remove()
 	})
 
 
@@ -102,11 +114,11 @@ $(function() {
 		}
 	})
 
-	$("#imgDetail .close").click(function(){
+	$("#imgDetail .close").click(function() {
 		$("#imgDetail").removeClass("active")
 	})
 
-	$("#info .close").click(function(){
+	$("#info .close").click(function() {
 		$("#info").removeClass("active")
 	})
 
@@ -114,35 +126,28 @@ $(function() {
 })
 
 function checkForReload(resolve, reject) {
-	if(!state.ready.center)
+	if (!state.ready)
 		return
 
 	var tiles = generateTiles(map.getView().calculateExtent(map.getSize()))
-
 	var tilePromises = []
 	tiles.forEach(function(tile) {
 		if (state.tiles.indexOf(tile[0] + "-" + tile[1]) == -1) {
 			state.tiles.push(tile[0] + "-" + tile[1])
 			tilePromises.push(new Promise(
 				function(resolve, reject) {
-					getTreeTile(resolve, reject, tile)
+					getTreeTile(resolve, reject, tile, tile[0] + "-" + tile[1])
 				}
 			))
 		}
 	})
 
-	Promise.all(tilePromises).then(function(trees){
+	Promise.all(tilePromises).then(function(trees) {
 
-		var allTrees = []
+		var merged = [].concat.apply([], trees);
 
-		trees.forEach(function(array){
-			array.forEach(function(item){
-				allTrees.push(item)
-			})
-		})
-		
-		updateTrees(allTrees)
-		resolve(allTrees)
+		updateTrees(merged)
+		resolve(merged)
 	})
 }
 
@@ -175,7 +180,7 @@ function generateTiles(extent) {
 		lats.forEach(function(lat) {
 			var coord1 = proj4('EPSG:21781', 'EPSG:4326', [lon, lat])
 			var coord2 = proj4('EPSG:21781', 'EPSG:4326', [lon + state.tileSize, lat + state.tileSize])
-			tiles.push([coord1[0],coord1[1],coord2[0],coord2[1]])
+			tiles.push([coord1[0], coord1[1], coord2[0], coord2[1]])
 		})
 	})
 

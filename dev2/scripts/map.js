@@ -57,13 +57,15 @@ function initUser() {
 	})
 	features.user.setStyle(new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: state.compass ? 'svg/user-dir-accent.svg' : 'svg/user-accent.svg'
+			src: state.compass ? 'svg/user-dir-accent.svg' : 'svg/user-accent.svg',
+			size: [40,40]
 		}))
 	}))
 
-	userLayer.setSource(new ol.source.Vector({
-		features: [features.user]
-	}))
+
+	userLayer.setSource(new ol.source.Vector())
+	if(state.geolocation)
+		userLayer.getSource().addFeature(features.user)
 }
 
 // Update position and orientation
@@ -88,7 +90,8 @@ function updateTrees(trees) {
 
 		treeStyles.green = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/tree-green-active.svg'
+				src: 'svg/tree-green-active.png',
+				scale: .5,
 			}))
 		});
 
@@ -96,13 +99,14 @@ function updateTrees(trees) {
 			image: new ol.style.Icon(({
 				src: 'svg/tree-white.png',
 				opacity: .6,
-				scale: .5
+				scale: .5,
 			}))
 		});
 
 		treeStyles.white = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/tree-white-active.svg'
+				src: 'svg/tree-white-active.png',
+				scale: .5,
 			}))
 		});
 
@@ -149,9 +153,16 @@ function mapEventHandlers() {
 
 	map.on('click', function(e) {
 		// Check for map change
-		if (e.pixel[0] > window.innerWidth - 60 && e.pixel[0] < window.innerWidth - 12 && e.pixel[1] > window.innerHeight - 174 && e.pixel[1] < window.innerHeight - 126) {
-			toggleLayers()
-			return
+		if (!state.desktop) {
+			if (e.pixel[0] > window.innerWidth - 54 && e.pixel[0] < window.innerWidth - 6 && e.pixel[1] > window.innerHeight - 174 && e.pixel[1] < window.innerHeight - 126) {
+				toggleLayers()
+				return
+			}
+		} else {
+			if (e.pixel[0] > 6 && e.pixel[0] < 54 && e.pixel[1] > window.innerHeight - 54 && e.pixel[1] < window.innerHeight - 6) {
+				toggleLayers()
+				return
+			}
 		}
 
 		// Check for selected feature
@@ -168,7 +179,7 @@ function mapEventHandlers() {
 
 				state.tree = proj4('EPSG:21781', 'EPSG:4326', feature.getGeometry().getCoordinates())
 				details(feature.getProperties().Baumnummer)
-				
+
 				selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
 				feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
 				selectedFeature = feature
@@ -255,7 +266,7 @@ function getWmtsLayers(resolve, reject) {
 				}
 
 				ctx.save()
-				ctx.translate(ctx.canvas.width - 54 * pixelRatio, ctx.canvas.height - 114 * pixelRatio)
+				ctx.translate((state.desktop ? 6 : (ctx.canvas.width/2) - 54) * pixelRatio, ctx.canvas.height - (state.desktop ? 54 : 114) * pixelRatio)
 				ctx.scale(pixelRatio, pixelRatio)
 
 				// draw shadow

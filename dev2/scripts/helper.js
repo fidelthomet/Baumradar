@@ -32,8 +32,9 @@ function cleanArtist(artist){
 	}
 }
 
-function wikiThumb(img){
-	var factor = Math.round(window.devicePixelRatio*window.innerWidth)
+function wikiThumb(img, fullscreen){
+	var factor = Math.round(window.devicePixelRatio*( !state.desktop || fullscreen ? window.innerWidth : 360))
+
 	
 	if(img.width<=factor)
 		return img.url
@@ -60,7 +61,6 @@ function updateDirection(){
 		// angle in degrees
 		var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 		angleDeg -= state.user.heading
-		console.log(angleDeg)
 		$("#trees .tree .left .dir").css("transform", "rotate(" + angleDeg + "deg)")
 
 		var dist = getDistanceFromLatLonInM(state.user.location,state.tree)

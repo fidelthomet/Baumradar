@@ -1,4 +1,6 @@
 function details(tree) {
+	$("#trees .tree").removeClass("active")
+
 	new Promise(
 		function(resolve, reject) {
 			getDetails(resolve, reject, tree)
@@ -9,9 +11,7 @@ function details(tree) {
 
 		tree.wikimediaCat = getWikimediaCat(tree)
 		if (!state.wiki[tree.wikimediaCat]) {
-			// state.wiki[tree.wikimediaCat] = {
-			// 	loading: true
-			// }
+			
 			new Promise(
 				function(resolve, reject) {
 					getWiki(resolve, reject, tree.wikimediaCat)
@@ -52,14 +52,17 @@ function addWikiDetails(Baumnummer, wiki) {
 			if (wiki.imgs.length > 2) {
 				var imgs = {
 					img1: wikiThumb(wiki.imgs[0]),
+					imgf1: wikiThumb(wiki.imgs[0],true),
 					lurl1: wiki.imgs[0].licenceUrl,
 					artist1: wiki.imgs[0].artist,
 					licence1: wiki.imgs[0].licence,
 					img2: wikiThumb(wiki.imgs[1]),
+					imgf2: wikiThumb(wiki.imgs[1],true),
 					lurl2: wiki.imgs[1].licenceUrl,
 					artist2: wiki.imgs[1].artist,
 					licence2: wiki.imgs[1].licence,
 					img3: wikiThumb(wiki.imgs[2]),
+					imgf3: wikiThumb(wiki.imgs[2],true),
 					lurl3: wiki.imgs[2].licenceUrl,
 					artist3: wiki.imgs[2].artist,
 					licence3: wiki.imgs[2].licence
@@ -76,7 +79,8 @@ function addWikiDetails(Baumnummer, wiki) {
 			}
 			$("#" + Baumnummer + " .images").html(domImgs)
 			$("#" + Baumnummer + " .images .img").click(function(){
-				$("#imgDetail").css("background-image",$(this).css("background-image"))
+				console.log($(this).attr("attr-bg"))
+				$("#imgDetail").css("background-image","url("+$(this).attr("attr-bg")+")")
 				$("#imgDetail").addClass("active")
 				// $("#imgDetail").css("height", window.innerHeight+"px")
 				$("#imgDetail .licence").html("Image by "+$(this).attr("attr-artist")+"<br/>Licence: "+$(this).attr("attr-licence"))
@@ -94,11 +98,12 @@ function addWikiDetails(Baumnummer, wiki) {
 			$("#" + Baumnummer + " .wiki").hide()
 		}
 	}
+	$("#trees .tree").addClass("active")
 }
 
 function getWikimediaCat(tree) {
 	var wikimediaCat = tree.Baumgattung + "_" + tree.Baumart_LAT
-	return wikimediaCat.replace(/ /g, '_');
+	return wikimediaCat.replace(/ /g, '_').replace(/_x_/g, '_×_');
 }
 
 function cleanDetails(tree) {
@@ -138,7 +143,7 @@ var detailDom = {
 	container: '<div id="{Baumnummer}" class="tree"><div class="images"></div><div class="wiki"></div><div id="overviewTitle">Vorkommen</div><div id="overview"></div>',
 	title: '<div class="title"><div class="left"><div class="dir"></div><div class="num">{number}</div><div class="dist">{distance}</div></div><div class="border"></div><div class="right"><div class="ger">{Baumname_D}</div><div class="lat">{Baumname_LAT}</div></div></div>',
 	details: '<div class="details">	<div class="detail year">{Pflanzjahr}</div>	<div class="detail height">{height}</div>	<div class="detail width">{width}</div>	<div class="detail baumnum">{Baumnummer}</div></div><div class="location"><div>{Strasse}, {Quartier}</div></div></div>',
-	images: '<div class="img1 img" style="background-image:url({img1})" attr-artist="{artist1}" attr-licence="{licence1}" attr-lurl="{lurl1}"></div><div class="img2 img" style="background-image:url({img2})" attr-artist="{artist2}" attr-licence="{licence2}" attr-lurl="{lurl2}"></div><div class="img3 img" style="background-image:url({img3})" attr-artist="{artist3}" attr-licence="{licence3}" attr-lurl="{lurl3}"></div>',
-	singleImage: '<div class="simg img" style="background-image:url({img1})" attr-artist="{artist1}" attr-licence="{licence1}" attr-lurl="{lurl1}"></div>',
-	extract: '{extract} <a href="{url}">Wikipedia</a>'
+	images: '<div class="img1 img" style="background-image:url({img1})" attr-bg="{imgf1}" attr-artist="{artist1}" attr-licence="{licence1}" attr-lurl="{lurl1}"></div><div class="img2 img" style="background-image:url({img2})" attr-bg="{imgf2}" attr-artist="{artist2}" attr-licence="{licence2}" attr-lurl="{lurl2}"></div><div class="img3 img" style="background-image:url({img3})" attr-bg="{imgf3}" attr-artist="{artist3}" attr-licence="{licence3}" attr-lurl="{lurl3}"></div>',
+	singleImage: '<div class="simg img" style="background-image:url({img1})" attr-bg="{imgf1}" attr-artist="{artist1}" attr-licence="{licence1}" attr-lurl="{lurl1}"></div>',
+	extract: '{extract} <a target="_blank" href="{url}">Wikipedia</a>'
 }

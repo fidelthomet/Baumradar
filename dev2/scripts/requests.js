@@ -34,8 +34,11 @@ function getTreeTile(resolve, reject, tile) {
 		url+="/"+item
 	})
 
-	$.get(url, function(data) {
+	$.get(url).success(function(data) {
 		resolve(JSON.parse(data))
+	}).fail(function(){
+		state.tiles.splice(state.tiles.indexOf(tile[0] + "-" + tile[1]), 1)
+		resolve()
 	})
 }
 
@@ -94,7 +97,7 @@ function getWiki(resolve, reject, wikimediaCat) {
 	}))
 
 	wikiPromises.push(new Promise(function(res, rej) {
-		var url = state.proxy + "https://de.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=4&exintro=&explaintext=&iwurl=&rawcontinue=&titles=" + wikimediaCat + "&redirects="
+		var url = state.proxy + "https://de.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&explaintext=&iwurl=&rawcontinue=&titles=" + wikimediaCat + "&redirects="
 
 		$.get(url, function(data) {
 			
