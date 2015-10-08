@@ -30,7 +30,7 @@ function handleResults(data) {
 		details($(this).attr("treeId"))
 
 		selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
-		addSelectedTree([$(this).attr("lon"), $(this).attr("lat")])
+		highlightTree([$(this).attr("lon"), $(this).attr("lat")])
 
 		state.watchposition = false;
 		

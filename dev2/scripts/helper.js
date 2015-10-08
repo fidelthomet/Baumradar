@@ -17,14 +17,14 @@ function deg2rad(deg) {
 	return deg * (Math.PI / 180)
 }
 
-function template(dom, object){
-	return dom.replace(/{(\w+)}/g, function(_,k){
-      return object[k];
+function template(dom, object) {
+	return dom.replace(/{(\w+)}/g, function(_, k) {
+		return object[k];
 	});
 }
 
-function cleanArtist(artist){
-	if(artist.indexOf("</a>")!=-1){
+function cleanArtist(artist) {
+	if (artist.indexOf("</a>") != -1) {
 		// console.log(artist)
 		return artist.split('">')[1].split("</a>")[0]
 	} else {
@@ -32,56 +32,53 @@ function cleanArtist(artist){
 	}
 }
 
-function wikiThumb(img, fullscreen){
-	var factor = Math.round(window.devicePixelRatio*( !state.desktop || fullscreen ? window.innerWidth : 360))
+function wikiThumb(img, fullscreen) {
+	var factor = Math.round(window.devicePixelRatio * (!state.desktop || fullscreen ? window.innerWidth : 360))
 
-	
-	if(img.width<=factor)
+
+	if (img.width <= factor)
 		return img.url
 
 	var url = img.url.split("/commons/").join("/commons/thumb/").split("/")
-	url.push(factor+"px-"+url[url.length-1])
+	url.push(factor + "px-" + url[url.length - 1])
 
 	return url.join("/")
 }
 
-function updateDirection(){
+function updateDirection() {
 
-		var p2 = {
-			x: state.tree[1],
-			y: state.tree[0]
-		};
+	var p2 = {
+		x: state.tree[1],
+		y: state.tree[0]
+	};
 
-		var p1 = {
-			x: state.user.location[1],
-			y: state.user.location[0]
-		};
+	var p1 = {
+		x: state.user.location[1],
+		y: state.user.location[0]
+	};
 
 
-		// angle in degrees
-		var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-		angleDeg -= state.user.heading
-		$("#trees .tree .left .dir").css("transform", "rotate(" + angleDeg + "deg)")
+	// angle in degrees
+	var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+	angleDeg -= state.user.heading
+	$("#trees .tree .left .dir").css("transform", "rotate(" + angleDeg + "deg)")
 
-		var dist = getDistanceFromLatLonInM(state.user.location,state.tree)
-		dist = dist < 1000 ? dist + "m" : (Math.round(dist / 100)) / 10 + "km"
+	var dist = getDistanceFromLatLonInM(state.user.location, state.tree)
+	dist = dist < 1000 ? dist + "m" : (Math.round(dist / 100)) / 10 + "km"
 
-		$("#trees .tree .left .dist").html(dist)
+	$("#trees .tree .left .dist").html(dist)
 }
 
-function sortTreesByDistance(trees){
-	trees.forEach(function (tree){
+function sortByDist(trees) {
+	trees.forEach(function(tree) {
 		tree.dist = getDistanceFromLatLonInM([tree.lon, tree.lat], state.user.location)
 	})
-	trees.sort(sortByDist)
-
+	trees.sort(function(a, b) {
+		if (a.dist < b.dist)
+			return -1;
+		if (a.dist > b.dist)
+			return 1;
+		return 0;
+	})
 	return trees
-}
-
-function sortByDist(a, b) {
-	if (a.dist < b.dist)
-		return -1;
-	if (a.dist > b.dist)
-		return 1;
-	return 0;
 }

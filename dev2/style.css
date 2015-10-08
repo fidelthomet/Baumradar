@@ -424,10 +424,12 @@ body {
     background-color: rgba(255, 255, 255, 0.9);
     opacity: 0;
     pointer-events: none;
-    transition: opacity .4s; }
+    transition: opacity .4s, transform .4s;
+    transform: translateX(30%); }
     body #info.active {
       opacity: 1;
-      pointer-events: all; }
+      pointer-events: all;
+      transform: translateX(0); }
     body #info .close {
       position: fixed;
       width: 60px;

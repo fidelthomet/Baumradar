@@ -58,14 +58,17 @@ function initUser() {
 	features.user.setStyle(new ol.style.Style({
 		image: new ol.style.Icon(({
 			src: state.compass ? 'svg/user-dir-accent.svg' : 'svg/user-accent.svg',
-			size: [40,40]
+			size: [40, 40]
 		}))
 	}))
 
 
 	userLayer.setSource(new ol.source.Vector())
-	if(state.geolocation)
+	if (state.geolocation)
 		userLayer.getSource().addFeature(features.user)
+
+	// enable location tracking
+	state.ready = true
 }
 
 // Update position and orientation
@@ -195,12 +198,13 @@ function mapEventHandlers() {
 	})
 
 	map.on("moveend", function() {
-		checkForReload(proj4('EPSG:21781', 'EPSG:4326', map.getView().getCenter()))
+		if(state.autoRefresh)
+			refreshTrees(proj4('EPSG:21781', 'EPSG:4326', map.getView().getCenter()))
 	})
 }
 
 // adds a temporary tree at specified location and sets it as selectedFeature
-function addSelectedTree(location) {
+function highlightTree(location) {
 	if (tempTree)
 		treeLayer.getSource().removeFeature(tempTree)
 
@@ -266,7 +270,7 @@ function getWmtsLayers(resolve, reject) {
 				}
 
 				ctx.save()
-				ctx.translate((state.desktop ? 6 : (ctx.canvas.width/2) - 54) * pixelRatio, ctx.canvas.height - (state.desktop ? 54 : 114) * pixelRatio)
+				ctx.translate((state.desktop ? 6 : (ctx.canvas.width / 2) - 54) * pixelRatio, ctx.canvas.height - (state.desktop ? 54 : 114) * pixelRatio)
 				ctx.scale(pixelRatio, pixelRatio)
 
 				// draw shadow
@@ -297,11 +301,13 @@ function getWmtsLayers(resolve, reject) {
 }
 
 // pan map to specified location (EPSG:4326)
-function panTo(center) {
-	var pan = ol.animation.pan({
-		duration: 400,
-		source: map.getView().getCenter()
-	});
-	map.beforeRender(pan);
+function panTo(center, skipAnimation) {
+	if (!skipAnimation) {
+		var pan = ol.animation.pan({
+			duration: 400,
+			source: map.getView().getCenter()
+		});
+		map.beforeRender(pan);
+	}
 	map.getView().setCenter(proj4('EPSG:4326', 'EPSG:21781', center))
 }

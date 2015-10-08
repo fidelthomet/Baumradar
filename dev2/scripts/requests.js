@@ -37,7 +37,7 @@ function getTreeTile(resolve, reject, tile) {
 	$.get(url).success(function(data) {
 		resolve(JSON.parse(data))
 	}).fail(function(){
-		state.tiles.splice(state.tiles.indexOf(tile[0] + "-" + tile[1]), 1)
+		state.reqTiles.splice(state.reqTiles.indexOf(tile[0] + "-" + tile[1]), 1)
 		resolve()
 	})
 }

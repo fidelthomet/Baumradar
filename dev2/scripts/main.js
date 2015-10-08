@@ -4,6 +4,7 @@ var state = {
 	compass: false,
 	user: {
 		location: [8.545953265970327, 47.364551977441565],
+		defaultLocation: [8.545953265970327, 47.364551977441565],
 		heading: 0
 	},
 	lastRequest: [8.545953265970327, 47.364551977441565],
@@ -21,12 +22,19 @@ var state = {
 	searchTreesP: undefined,
 	searchAddressesP: undefined,
 	tileSize: 200,
-	tiles: [],
+	reqTiles: [],
+	ready: false,
+	autoRefresh: false
 }
 
 $(function() {
 	// Detect Mobile/Desktop Devices
 	state.desktop = document.documentElement.clientWidth >= 800 ? true : false
+	if (!state.desktop) {
+		// Overwrite CSS for mobile devices (window height might change when scrolling)
+		$("#map").css("height", $("#map").height() + "px")
+		$("#geolocation").css("top", ($("#map").height() - 114) + "px")
+	}
 
 	// initialize map (openlayers) and location (geolocation and heading)
 	var initPromises = []
@@ -34,106 +42,58 @@ $(function() {
 	initPromises.push(new Promise(initLocation))
 
 	Promise.all(initPromises).then(function() {
-
-
-		panTo(state.user.location)
-		state.ready = true
-		
-		new Promise(checkForReload).then(function(trees) {
-			var sortedTrees = sortTreesByDistance(trees)
-
-			details(sortedTrees[0].Baumnummer)
-
-			addSelectedTree([sortedTrees[0].lon, sortedTrees[0].lat])
-			state.tree = [sortedTrees[0].lon, sortedTrees[0].lat]
-			
-
-			$("#splashscreen").addClass("hide")
-		})
-
+		// finish initialization // center map on user location 
+		panTo(state.user.location, true)
 		initUser()
 
-		if (!state.desktop) {
-			// Overwrite CSS for mobile devices (window height might change when scrolling)
-			$("#map").css("height", $("#map").height() + "px")
-			$("#geolocation").css("top", ($("#map").height() - 114) + "px")
-		}
+		// Get trees for current location, then finish init
+		new Promise(refreshTrees).then(finishInit)
 	})
 
-	$("#geolocation").click(function() {
-		state.watchposition = true
-		if (state.ready) {
-			panTo(state.user.location)
-			updateUser()
-		}
-	})
-
-	$("#splashscreen").on("transitionend", function(){
-		$(this).remove()
-	})
-
-
-	$("header .btBack").click(function() {
-		state.search = !state.search
-		$("header, #results, #trees").toggleClass("search")
-
-		if (state.search) {
-			$("header .search").removeClass("hide")
-			$("header .input").focus()
-			$("header .input").html("")
-		}
-	})
-
-	$("header .btOpt").click(function() {
-		$("#info").addClass("active")
-	})
-
-	$("#info .close").click(function() {
-		$("#info").addClass("active")
-	})
-
-	$("header .input").click(function() {
-		state.search = true
-		$("header .search").removeClass("hide")
-		$("header .input").html("")
-		$("header, #results, #trees").addClass("search")
-	})
-
-	$("header .input").on("keyup", function() {
-		if ($(this).html()) {
-			$("header .search").addClass("hide")
-
-			if ($(this).html().length >= 3) {
-				makeSearch($(this).html())
-			} else {
-				$("#results #rInner").html("")
-			}
-
-		} else {
-			$("header .search").removeClass("hide")
-		}
-	})
-
-	$("#imgDetail .close").click(function() {
-		$("#imgDetail").removeClass("active")
-	})
-
-	$("#info .close").click(function() {
-		$("#info").removeClass("active")
-	})
-
-
+	initEvents()
 })
 
-function checkForReload(resolve, reject) {
-	if (!state.ready)
+// --
+// finishInit
+// --
+// finishes initialization
+// --
+function finishInit(trees) {
+	// reset view if user is to far away from any tree and therefore probably not in zurich
+	if(!trees.length){
+		panTo(state.user.defaultLocation, true)
+		new Promise(refreshTrees).then(finishInit)
 		return
+	}
 
-	var tiles = generateTiles(map.getView().calculateExtent(map.getSize()))
+	// highlight closest tree
+	var closestTree = sortByDist(trees)[0]
+	details(closestTree.Baumnummer)
+	state.tree = [closestTree.lon, closestTree.lat]
+	highlightTree(state.tree)
+
+	// hide splashscreen
+	$("#splashscreen").addClass("hide")
+
+	// automaticly refresh trees if map section changes
+	state.autoRefresh = true
+}
+
+// -- 
+// refreshTrees
+// --
+// handles requesting (if requiered) and displaying trees for current map section
+// to optimize data usage and to prevent requesting trees mutliple times hte map is split into multiple tiles
+// --
+function refreshTrees(resolve, reject) {
+	// calculate extents of tiles in current map section
+	var tiles = calcTileExtents()
+
+	// request trees for each tile if it's not already loaded/requested
 	var tilePromises = []
 	tiles.forEach(function(tile) {
-		if (state.tiles.indexOf(tile[0] + "-" + tile[1]) == -1) {
-			state.tiles.push(tile[0] + "-" + tile[1])
+		if (state.reqTiles.indexOf(tile[0] + "-" + tile[1]) == -1) {
+			state.reqTiles.push(tile[0] + "-" + tile[1])
 			tilePromises.push(new Promise(
 				function(resolve, reject) {
 					getTreeTile(resolve, reject, tile, tile[0] + "-" + tile[1])
@@ -143,20 +103,34 @@ function checkForReload(resolve, reject) {
 	})
 
 	Promise.all(tilePromises).then(function(trees) {
-
+		// merge all requested trees into one array
 		var merged = [].concat.apply([], trees);
-
+		// add new trees to map
 		updateTrees(merged)
-		resolve(merged)
+
+		if (resolve)
+			resolve(merged)
 	})
 }
 
-function generateTiles(extent) {
-	extent.forEach(function(point, i) {
-		extent[i] = point - point % state.tileSize
+// --
+// calcTilesExtents
+// --
+// 1) determines extent (x1,y1,x2,y2) of current view
+// 2) calculates points (x1,y1) of corresponding tiles
+// 3) fills in missing tiles / removes duplicates
+// 4) converts points from 'EPSG:21781' to 'EPSG:4326'
+// 5) returns array of tile extents
+// --
+function calcTileExtents() {
+
+	var section = map.getView().calculateExtent(map.getSize())
+
+	section.forEach(function(point, i) {
+		section[i] = point - point % state.tileSize
 	})
 
-	var lons = [extent[0], extent[2]]
+	var lons = [section[0], section[2]]
 
 	if (!(lons[1] - lons[0]) / state.tileSize) {
 		lons = [lons[0]]
@@ -166,7 +140,7 @@ function generateTiles(extent) {
 		}
 	}
 
-	var lats = [extent[1], extent[3]]
+	var lats = [section[1], section[3]]
 	if (!(lats[1] - lats[0]) / state.tileSize) {
 		lats = [lats[0]]
 	} else {
@@ -187,7 +161,82 @@ function generateTiles(extent) {
 	return tiles
 }
 
+// --
+// hide search
+// --
+// leave search state
+// --
 function hideSearch() {
 	state.search = !state.search
 	$("header, #results, #trees").removeClass("search")
+}
+
+// --
+// initEvents
+// --
+// adds eventlisteners
+// --
+function initEvents() {
+	// center map on user and activate tracking
+	$("#geolocation").click(function() {
+		state.watchposition = true
+		if (state.ready) {
+			panTo(state.user.location)
+			updateUser()
+		}
+	})
+
+	// remove splashscreen after fadeout
+	$("#splashscreen").on("transitionend", function() {
+		$(this).remove()
+	})
+
+	// toggle search state
+	$("header .btBack").click(function() {
+		state.search = !state.search
+		$("header, #results, #trees").toggleClass("search")
+
+		if (state.search) {
+			$("header .search").removeClass("hide")
+			$("header .input").focus()
+			$("header .input").html("")
+		}
+	})
+
+	// enter info state
+	$("header .btOpt").click(function() {
+		$("#info").addClass("active")
+	})
+
+	// leave info state
+	$("#info .close").click(function() {
+		$("#info").removeClass("active")
+	})
+
+	// enter search state
+	$("header .input").click(function() {
+		state.search = true
+		$("header .search").removeClass("hide")
+		$("header .input").html("")
+		$("header, #results, #trees").addClass("search")
+	})
+
+	// search
+	$("header .input").on("keyup", function() {
+		if ($(this).html()) {
+			$("header .search").addClass("hide")
+			if ($(this).html().length >= 3) {
+				makeSearch($(this).html())
+			} else {
+				$("#results #rInner").html("")
+			}
+		} else {
+			$("header .search").removeClass("hide")
+		}
+	})
+
+	// leave image state
+	$("#imgDetail .close").click(function() {
+		$("#imgDetail").removeClass("active")
+	})
 }

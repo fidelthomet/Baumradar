@@ -5,7 +5,7 @@ function initLocation(resolve, reject) {
 			state.user.location = [position.coords.longitude, position.coords.latitude]
 			state.geolocation = true
 
-			if (state.ready.center) {
+			if (state.ready) {
 				if (state.watchposition) {
 					panTo(state.user.location)
 				}
@@ -45,7 +45,7 @@ function initLocation(resolve, reject) {
 					state.user.heading = heading
 						// $(".dir").css("transform", "rotate(" + -state.user.heading + "deg)")
 
-					if (state.ready.center) {
+					if (state.ready) {
 						updateUser()
 						updateDirection()
 					}
