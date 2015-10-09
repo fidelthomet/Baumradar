@@ -3,7 +3,6 @@ var map,
 	userLayer = new ol.layer.Vector(),
 	features = {},
 	treeStyles = {},
-	tempTree,
 	activeAddress
 
 
@@ -38,10 +37,10 @@ function initMap(resolve, reject) {
 
 	mapEventHandlers()
 
-	new Promise(function(resolve,reject){
-		getWmtsLayers(resolve,reject,config.url.wmtsXml)
+	new Promise(function(resolve, reject) {
+		getWmtsLayers(resolve, reject, config.url.wmtsXml)
 	}).then(function() {
-		var layers = [state.layers.base[0], state.layers.base[1], userLayer, treeLayer, state.layers.mask[0], state.layers.mask[1]]
+		var layers = [state.layers.map, userLayer, treeLayer, state.layers.aerial]
 
 		layers.forEach(function(layer) {
 			map.addLayer(layer)
@@ -136,15 +135,11 @@ function toggleLayers() {
 	state.satelite = !state.satelite
 	$("body").toggleClass("satelite")
 
-	// switch layers
-	state.layers.base.forEach(function(layer) {
-		layer.setVisible(!layer.getVisible())
-	})
-	state.layers.mask.forEach(function(layer) {
-		layer.setVisible(!layer.getVisible())
-	})
+	map.getLayers().setAt(state.satelite ? 3 : 0 , state.layers.map)
+	map.getLayers().setAt(state.satelite ? 0 : 3 , state.layers.aerial)
+	state.layers.map.setOpacity(state.satelite ? .44 : .22)
 
-	// update tree style
+
 	features.trees.forEach(function(item) {
 		item.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
 	})
@@ -176,7 +171,6 @@ function mapEventHandlers() {
 		if (feature) {
 			if (feature.getProperties().Baumnummer) {
 				state.watchposition = false;
-
 				highlightTree(proj4('EPSG:21781', 'EPSG:4326', feature.getGeometry().getCoordinates()), true)
 				details(feature.getProperties().Baumnummer)
 			}
@@ -188,7 +182,7 @@ function mapEventHandlers() {
 	})
 
 	map.on("moveend", function() {
-		if(state.autoRefresh)
+		if (state.autoRefresh)
 			refreshTrees(proj4('EPSG:21781', 'EPSG:4326', map.getView().getCenter()))
 	})
 }
@@ -210,76 +204,73 @@ function getWmtsLayers(resolve, reject, url) {
 				layer: wmtsLayer.Identifier
 			})
 
-			var base = new ol.layer.Tile({
+			state.layers[wmtsLayer.Identifier == "UebersichtsplanAktuell" ? "map" : "aerial"] = new ol.layer.Tile({
 				source: new ol.source.WMTS(options),
-				visible: wmtsLayer.Identifier == "UebersichtsplanAktuell",
 				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.22 : 1
 			})
-
-
-			var mask = new ol.layer.Tile({
-				source: new ol.source.WMTS(options),
-				visible: wmtsLayer.Identifier != "UebersichtsplanAktuell",
-				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.44 : 1,
-			})
-
-			state.layers.base.push(base)
-			state.layers.mask.push(mask)
 		})
 
 		// Mask layers for preview
-		state.layers.mask.forEach(function(layer) {
-			layer.on('precompose', function(event) {
-				console.log("test")
-				var ctx = event.context;
-				var pixelRatio = window.devicePixelRatio
-				var drawRect = function(ctx) {
-					ctx.beginPath()
-					ctx.moveTo(2, 0)
-					ctx.lineTo(46, 0)
-					ctx.quadraticCurveTo(48, 0, 48, 2)
-					ctx.lineTo(48, 46)
-					ctx.quadraticCurveTo(48, 48, 46, 48)
-					ctx.lineTo(2, 48)
-					ctx.quadraticCurveTo(0, 48, 0, 46)
-					ctx.lineTo(0, 2)
-					ctx.quadraticCurveTo(0, 0, 4, 0)
-				}
-
-				ctx.save()
-				ctx.translate((state.desktop ? 6 : (ctx.canvas.width / 2) - 54) * pixelRatio, ctx.canvas.height - (state.desktop ? 54 : 114) * pixelRatio)
-				ctx.scale(pixelRatio, pixelRatio)
-
-				// draw shadow
-				ctx.fillStyle = "rgb(255,255,255)"
-				ctx.shadowColor = "rgba(0,0,0,0.5)"
-				ctx.shadowBlur = 4
-				drawRect(ctx)
-				ctx.fill()
-					// draw mask
-				ctx.shadowColor = "rgba(0,0,0,0)"
-				drawRect(ctx)
-				ctx.clip()
-
-				ctx.setTransform(1, 0, 0, 1, 0, 0)
-			});
-
-			layer.on('postcompose', function(event) {
-				var ctx = event.context;
-				ctx.restore();
-			});
+		state.layers.map.on('precompose', function(event) {
+			if (state.satelite)
+				precompose(event.context)
+		})
+		state.layers.aerial.on('precompose', function(event) {
+			if (!state.satelite)
+				precompose(event.context)
+		})
+		state.layers.map.on('postcompose', function(event) {
+			if (state.satelite)
+				event.context.restore()
+		})
+		state.layers.aerial.on('postcompose', function(event) {
+			if (!state.satelite)
+				event.context.restore()
 		})
 		resolve()
 
-	}).fail(function(e,d,f,g,h) {
-		if(!state.loadingXmlFailed){
+	}).fail(function(e, d, f, g, h) {
+		if (!state.loadingXmlFailed) {
 			state.loadingXmlFailed = true
-			getWmtsLayers(resolve,reject,config.url.wmtsXmlLocal)
+			getWmtsLayers(resolve, reject, config.url.wmtsXmlLocal)
 		} else {
 			console.log("failed for real")
 			resolve()
 		}
 	})
+}
+
+function precompose(ctx) {
+	var pixelRatio = window.devicePixelRatio
+	var drawRect = function(ctx) {
+		ctx.beginPath()
+		ctx.moveTo(2, 0)
+		ctx.lineTo(46, 0)
+		ctx.quadraticCurveTo(48, 0, 48, 2)
+		ctx.lineTo(48, 46)
+		ctx.quadraticCurveTo(48, 48, 46, 48)
+		ctx.lineTo(2, 48)
+		ctx.quadraticCurveTo(0, 48, 0, 46)
+		ctx.lineTo(0, 2)
+		ctx.quadraticCurveTo(0, 0, 4, 0)
+	}
+
+	ctx.save()
+	ctx.translate((state.desktop ? 6 : (ctx.canvas.width / 2) - 54) * pixelRatio, ctx.canvas.height - (state.desktop ? 54 : 114) * pixelRatio)
+	ctx.scale(pixelRatio, pixelRatio)
+
+	// draw shadow
+	ctx.fillStyle = "rgb(255,255,255)"
+	ctx.shadowColor = "rgba(0,0,0,0.5)"
+	ctx.shadowBlur = 4
+	drawRect(ctx)
+	ctx.fill()
+		// draw mask
+	ctx.shadowColor = "rgba(0,0,0,0)"
+	drawRect(ctx)
+	ctx.clip()
+
+	ctx.setTransform(1, 0, 0, 1, 0, 0)
 }
 
 // pan map to specified location (EPSG:4326)
@@ -295,7 +286,7 @@ function panTo(center, skipAnimation) {
 }
 
 
-function highlightTree(location,pan) {
+function highlightTree(location, pan) {
 	state.tree = location
 
 	if (state.highlight.tree)
@@ -308,6 +299,6 @@ function highlightTree(location,pan) {
 	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
 	treeLayer.getSource().addFeature(state.highlight.tree)
 
-	if(pan)
+	if (pan)
 		panTo(location)
 }
