@@ -175,20 +175,10 @@ function mapEventHandlers() {
 
 		if (feature) {
 			if (feature.getProperties().Baumnummer) {
-				if (tempTree) {
-					treeLayer.getSource().removeFeature(tempTree)
-					tempTree = null
-				}
-
-				state.tree = proj4('EPSG:21781', 'EPSG:4326', feature.getGeometry().getCoordinates())
-				details(feature.getProperties().Baumnummer)
-
-				state.highlight.tree.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
-				feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
-				state.highlight.tree = feature
 				state.watchposition = false;
 
-				panTo(state.tree)
+				highlightTree(proj4('EPSG:21781', 'EPSG:4326', feature.getGeometry().getCoordinates()), true)
+				details(feature.getProperties().Baumnummer)
 			}
 		}
 	})
@@ -240,6 +230,7 @@ function getWmtsLayers(resolve, reject, url) {
 		// Mask layers for preview
 		state.layers.mask.forEach(function(layer) {
 			layer.on('precompose', function(event) {
+				console.log("test")
 				var ctx = event.context;
 				var pixelRatio = window.devicePixelRatio
 				var drawRect = function(ctx) {
@@ -303,28 +294,20 @@ function panTo(center, skipAnimation) {
 	map.getView().setCenter(proj4('EPSG:4326', 'EPSG:21781', center))
 }
 
-// adds a temporary tree at specified location and sets it as state.highlight.tree
-function highlightTree(location) {
-	if (tempTree)
-		treeLayer.getSource().removeFeature(tempTree)
 
-	state.highlight.tree = tempTree = new ol.Feature({
+function highlightTree(location,pan) {
+	state.tree = location
+
+	if (state.highlight.tree)
+		treeLayer.getSource().removeFeature(state.highlight.tree)
+
+	state.highlight.tree = new ol.Feature({
 		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
 	})
 
-	tempTree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
-	treeLayer.getSource().addFeature(tempTree)
+	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
+	treeLayer.getSource().addFeature(state.highlight.tree)
+
+	if(pan)
+		panTo(location)
 }
-
-// // adds a temporary tree at specified location and sets it as state.highlight.tree
-// function hlTree(location) {
-// 	if (state.highlight.tree)
-// 		treeLayer.getSource().removeFeature(state.highlight.tree)
-
-// 	state.highlight.tree = new ol.Feature({
-// 		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
-// 	})
-
-// 	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
-// 	treeLayer.getSource().addFeature(state.highlight.tree)
-// }

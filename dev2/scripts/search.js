@@ -47,14 +47,9 @@ function showResults(data) {
 	$(".rTreeItem").click(function() {
 		state.watchposition = false;
 
-		state.tree = [$(this).attr("lon"), $(this).attr("lat")]
-
-		state.highlight.tree.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
-		highlightTree([$(this).attr("lon"), $(this).attr("lat")])
-
-
+		highlightTree([$(this).attr("lon"), $(this).attr("lat")], true)
 		details($(this).attr("treeId"))
-		panTo([$(this).attr("lon"), $(this).attr("lat")]);
+		
 		hideSearch()
 
 	})

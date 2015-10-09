@@ -84,10 +84,9 @@ function finishInit(trees) {
 
 	// highlight closest tree
 	var closestTree = sortByDist(trees)[0]
+	highlightTree([closestTree.lon, closestTree.lat])
 	details(closestTree.Baumnummer)
-	state.tree = [closestTree.lon, closestTree.lat]
-	highlightTree(state.tree)
-
+	
 	// hide splashscreen
 	$("#splashscreen").addClass("hide")
 
