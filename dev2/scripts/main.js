@@ -1,3 +1,19 @@
+var config = {
+	url : {
+		// MAP
+		wmtsXml : "https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml",
+		wmtsXmlLocal : "wmts.xml", // fallback
+		// API - Search
+		searchTrees : "http://api.flaneur.io/baumkataster/search/{query}/limit=15&lon={lon}&lat={lat}",
+		searchAddresses : "http://api.flaneur.io/zadressen/search/{query}/limit=15"
+	},
+	dom : {
+		// SEARCH - Results
+		resultTree : '<div class="rTreeItem" treeId="{Baumnummer}" lon="{lon}" lat="{lat}"><div class="rTitle">{Baumname_D}</div><div class="rLat">{Baumname_LAT}</div><div class="rDetails">{dist} · {Strasse} · {Quartier}</div></div>',
+		resultAddress : '<div class="rAddressItem" lon="{lon}" lat="{lat}"><div class="rTitle">{Adresse}</div><div class="rDetails">{dist} · {PLZ} · {StatQuartier}</div></div>',
+	}
+}
+
 var state = {
 	watchposition: true,
 	geolocation: false,
@@ -15,7 +31,6 @@ var state = {
 	trees: {},
 	treeList: [],
 	wiki: {},
-	//proxy: "http://crossorigin.me/",
 	proxy: "https://cors-proxy.xiala.net/",
 	satelite: false,
 	search: false,
@@ -24,7 +39,8 @@ var state = {
 	tileSize: 200,
 	reqTiles: [],
 	ready: false,
-	autoRefresh: false
+	autoRefresh: false,
+	highlight: {}
 }
 
 $(function() {
@@ -226,7 +242,7 @@ function initEvents() {
 		if ($(this).html()) {
 			$("header .search").addClass("hide")
 			if ($(this).html().length >= 3) {
-				makeSearch($(this).html())
+				searchFor($(this).html())
 			} else {
 				$("#results #rInner").html("")
 			}
@@ -240,3 +256,4 @@ function initEvents() {
 		$("#imgDetail").removeClass("active")
 	})
 }
+

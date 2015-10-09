@@ -2,13 +2,17 @@ var overview, tLayer
 
 function initOverview(tree) {
 
+	// get necessary data
 	var overviewPromises = []
-	overviewPromises.push(new Promise(function(resolve, reject) {
-		getLocations(resolve, reject, tree.Baumname_LAT)
+	overviewPromises.push(new Promise(function(res, rej) {
+		getByUrl(res, rej, "http://api.flaneur.io/baumkataster/trees/Baumname_LAT=" + tree.Baumname_LAT, {parse: true})
 	}))
-
-	overviewPromises.push(new Promise(getDistricts))
-	overviewPromises.push(new Promise(getZuerichsee))
+	overviewPromises.push(new Promise(function(res, rej) {
+		getByUrl(res, rej, "https://data.stadt-zuerich.ch/storage/f/stadtkreis/stadtkreis.json", {proxy: true})
+	}))
+	overviewPromises.push(new Promise(function(res, rej) {
+		getByUrl(res, rej, "Zuerichsee.json")
+	}))
 
 	Promise.all(overviewPromises).then(function(data) {
 		var locations = data[0]

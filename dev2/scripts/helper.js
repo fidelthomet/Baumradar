@@ -82,3 +82,7 @@ function sortByDist(trees) {
 	})
 	return trees
 }
+
+function formatDist(m){
+	return m < 1000 ? m + "m" : (Math.round(m / 100)) / 10 + "km"
+}

@@ -3,7 +3,6 @@ var map,
 	userLayer = new ol.layer.Vector(),
 	features = {},
 	treeStyles = {},
-	selectedFeature,
 	tempTree,
 	activeAddress
 
@@ -39,13 +38,14 @@ function initMap(resolve, reject) {
 
 	mapEventHandlers()
 
-	new Promise(getWmtsLayers).then(function() {
+	new Promise(function(resolve,reject){
+		getWmtsLayers(resolve,reject,config.url.wmtsXml)
+	}).then(function() {
 		var layers = [state.layers.base[0], state.layers.base[1], userLayer, treeLayer, state.layers.mask[0], state.layers.mask[1]]
 
 		layers.forEach(function(layer) {
 			map.addLayer(layer)
 		})
-
 		resolve()
 	})
 }
@@ -148,7 +148,7 @@ function toggleLayers() {
 	features.trees.forEach(function(item) {
 		item.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
 	})
-	selectedFeature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
+	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
 }
 
 // add event handlers to map
@@ -183,9 +183,9 @@ function mapEventHandlers() {
 				state.tree = proj4('EPSG:21781', 'EPSG:4326', feature.getGeometry().getCoordinates())
 				details(feature.getProperties().Baumnummer)
 
-				selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+				state.highlight.tree.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
 				feature.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
-				selectedFeature = feature
+				state.highlight.tree = feature
 				state.watchposition = false;
 
 				panTo(state.tree)
@@ -203,23 +203,8 @@ function mapEventHandlers() {
 	})
 }
 
-// adds a temporary tree at specified location and sets it as selectedFeature
-function highlightTree(location) {
-	if (tempTree)
-		treeLayer.getSource().removeFeature(tempTree)
-
-	selectedFeature = tempTree = new ol.Feature({
-		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
-	})
-
-	tempTree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
-	treeLayer.getSource().addFeature(tempTree)
-}
-
 // Generate WMTS Layers
-function getWmtsLayers(resolve, reject) {
-
-	var url = state.proxy + 'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml'
+function getWmtsLayers(resolve, reject, url) {
 	$.get(url).success(function(data) {
 
 		// Generate a WMTSCapabilities-Object from XML-Ressource.
@@ -228,7 +213,7 @@ function getWmtsLayers(resolve, reject) {
 		delete capabilities.OperationsMetadata.GetTile
 
 		capabilities.Contents.Layer.forEach(function(wmtsLayer, index) {
-			if (wmtsLayer.Identifier != "Luftbild_2011" && wmtsLayer.Identifier != "UebersichtsplanAktuell")
+			if (wmtsLayer.Identifier != "LuftbildHybrid2011" && wmtsLayer.Identifier != "UebersichtsplanAktuell")
 				return
 
 			var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
@@ -240,6 +225,7 @@ function getWmtsLayers(resolve, reject) {
 				visible: wmtsLayer.Identifier == "UebersichtsplanAktuell",
 				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.22 : 1
 			})
+
 
 			var mask = new ol.layer.Tile({
 				source: new ol.source.WMTS(options),
@@ -294,9 +280,14 @@ function getWmtsLayers(resolve, reject) {
 		})
 		resolve()
 
-	}).fail(function(e) {
-		alert("Kartenmaterial konnte nicht geladen werden. Bitte später erneut versuchen.")
-		reject()
+	}).fail(function(e,d,f,g,h) {
+		if(!state.loadingXmlFailed){
+			state.loadingXmlFailed = true
+			getWmtsLayers(resolve,reject,config.url.wmtsXmlLocal)
+		} else {
+			console.log("failed for real")
+			resolve()
+		}
 	})
 }
 
@@ -311,3 +302,29 @@ function panTo(center, skipAnimation) {
 	}
 	map.getView().setCenter(proj4('EPSG:4326', 'EPSG:21781', center))
 }
+
+// adds a temporary tree at specified location and sets it as state.highlight.tree
+function highlightTree(location) {
+	if (tempTree)
+		treeLayer.getSource().removeFeature(tempTree)
+
+	state.highlight.tree = tempTree = new ol.Feature({
+		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
+	})
+
+	tempTree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
+	treeLayer.getSource().addFeature(tempTree)
+}
+
+// // adds a temporary tree at specified location and sets it as state.highlight.tree
+// function hlTree(location) {
+// 	if (state.highlight.tree)
+// 		treeLayer.getSource().removeFeature(state.highlight.tree)
+
+// 	state.highlight.tree = new ol.Feature({
+// 		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
+// 	})
+
+// 	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
+// 	treeLayer.getSource().addFeature(state.highlight.tree)
+// }

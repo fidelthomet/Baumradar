@@ -1,64 +1,71 @@
-function makeSearch(query) {
-	state.tempTreesP = new Promise(function(resolve, reject) {
-		tempTrees(resolve, reject, query)
-	})
-	
-	state.searchAddressesP = new Promise(function(resolve, reject) {
-		searchAddresses(resolve, reject, query)
-	})
+// --
+// searchFor
+// --
+// Initiate Search for Trees and Addresses 
+// --
+function searchFor(query) {
+	state.searchPromises = []
 
-	Promise.all([state.tempTreesP, state.searchAddressesP]).then(function(data) {
-		handleResults(data)
+	state.searchPromises.push(new Promise(function(res, rej) {
+		getByUrl(res, rej, "http://api.flaneur.io/baumkataster/search/" + query + "/limit=15&lon=" + state.user.location[0] + "&lat=" + state.user.location[1], {
+			parse: true
+		})
+	}))
+	state.searchPromises.push(new Promise(function(res, rej) {
+		getByUrl(res, rej, "http://api.flaneur.io/zadressen/search/" + query + "/limit=15", {
+			parse: true
+		})
+	}))
+
+	Promise.all(state.searchPromises).then(function(data) {
+		showResults(data)
 	})
 }
 
-function handleResults(data) {
+// --
+// showResults
+// --
+// Display Search Results
+// --
+function showResults(data) {
+
 	$("#results #rInner").html("")
 
-	var resultTemplate = '<div class="rTreeItem" treeId="{Baumnummer}" lon="{lon}" lat="{lat}"><div class="rTitle">{Baumname_D}</div><div class="rLat">{Baumname_LAT}</div><div class="rDetails">{distance} · {Strasse} · {Quartier}</div></div>'
+	// add results for trees
 	data[0].forEach(function(tree) {
-
-		tree.distance = tree.dist < 1000 ? tree.dist + "m" : (Math.round(tree.dist / 100)) / 10 + "km"
-
-		$("#results #rInner").append(template(resultTemplate, tree))
+		tree.dist = formatDist(tree.dist)
+		$("#results #rInner").append(template(config.dom.resultTree, tree))
 	})
 
+	// add results for addresses
+	data[1].forEach(function(address) {
+		address.dist = formatDist(getDistanceFromLatLonInM([address.lon, address.lat], state.user.location))
+		$("#results #rInner").append(template(config.dom.resultAddress, address))
+	})
+
+	// highlight tree on click
 	$(".rTreeItem").click(function() {
+		state.watchposition = false;
 
 		state.tree = [$(this).attr("lon"), $(this).attr("lat")]
 
-		details($(this).attr("treeId"))
-
-		selectedFeature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+		state.highlight.tree.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
 		highlightTree([$(this).attr("lon"), $(this).attr("lat")])
 
-		state.watchposition = false;
-		
-		var pan = ol.animation.pan({
-			duration: 400,
-			source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
-		});
-		map.beforeRender(pan);
+
+		details($(this).attr("treeId"))
 		panTo([$(this).attr("lon"), $(this).attr("lat")]);
 		hideSearch()
 
 	})
 
-	resultTemplate = '<div class="rAddressItem" lon="{lon}" lat="{lat}"><div class="rTitle">{Adresse}</div><div class="rDetails">{distance} · {PLZ} · {StatQuartier}</div></div>'
-	data[1].forEach(function(address) {
-
-		var dist = getDistanceFromLatLonInM([address.lon, address.lat], state.user.location)
-		address.distance = dist < 1000 ? dist + "m" : (Math.round(dist / 100)) / 10 + "km"
-
-		$("#results #rInner").append(template(resultTemplate, address))
-	})
-
+	// highlight address on click
 	$(".rAddressItem").click(function() {
+		state.watchposition = false;
+
 		if (activeAddress) {
 			userLayer.getSource().removeFeature(activeAddress)
 		}
-
-		state.watchposition = false;
 
 		activeAddress = new ol.Feature({
 			geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [$(this).attr("lon"), $(this).attr("lat")]))
@@ -67,18 +74,13 @@ function handleResults(data) {
 		style = new ol.style.Style({
 			image: new ol.style.Icon(({
 				src: 'svg/user-accent.svg',
-				size: [40,40]
+				size: [40, 40]
 			}))
 		});
 
 		activeAddress.setStyle(style)
 		userLayer.getSource().addFeature(activeAddress)
 
-		var pan = ol.animation.pan({
-			duration: 400,
-			source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
-		});
-		map.beforeRender(pan);
 		panTo([$(this).attr("lon"), $(this).attr("lat")]);
 		hideSearch()
 	})

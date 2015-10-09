@@ -1,158 +1,133 @@
-function getTrees(resolve, reject, params) {
-
-	var url = "http://api.flaneur.io/baumkataster/"
-
-	if (params.location) {
-		url += "loc/" + params.location[0] + "/" + params.location[1]
-		state.lastRequest = [params.location[0], params.location[1]]
-	}
-
-	$.get(url, function(data) {
-		var trees = JSON.parse(data)
-
-		if (!state.treeList.length) {
-			trees.forEach(function(tree) {
-				state.treeList.push(tree.Baumnummer)
-			})
-			resolve(trees)
-		} else {
-			var newTrees = []
-			trees.forEach(function(tree) {
-				if (state.treeList.indexOf(tree.Baumnummer) == -1) {
-					state.treeList.push(tree.Baumnummer)
-					newTrees.push(tree)
-				}
-			})
-			resolve(newTrees)
-		}
-	})
-}
-
+// --
+// getTreeTile
+// --
+// request all trees in specified tile
+// --
 function getTreeTile(resolve, reject, tile) {
-	var url = "http://api.flaneur.io/baumkataster/area"
-	tile.forEach(function (item){
-		url+="/"+item
-	})
+	var url = "http://api.flaneur.io/baumkataster/area/"
+	url += tile.join("/")
 
 	$.get(url).success(function(data) {
+		// return parsed result
 		resolve(JSON.parse(data))
-	}).fail(function(){
+	}).fail(function() {
+		// remove tile from state.reqTiles, it might work next time :)
 		state.reqTiles.splice(state.reqTiles.indexOf(tile[0] + "-" + tile[1]), 1)
 		resolve()
 	})
 }
 
-function getDetails(resolve, reject, tree) {
-
-	var url = "http://api.flaneur.io/baumkataster/tree/" + tree
+// --
+// getDetails
+// --
+// request tree details by Baumnummer
+// --
+function getDetails(resolve, reject, Baumnummer) {
+	var url = "http://api.flaneur.io/baumkataster/tree/" + Baumnummer
 
 	$.get(url, function(data) {
+		// return parsed result
 		resolve(JSON.parse(data)[0])
 	})
 }
 
+// --
+// getWiki
+// --
+// request wikicommons images and wikipedia article by wikimediaCat
+// --
 function getWiki(resolve, reject, wikimediaCat) {
-	var url = state.proxy + "https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&rawcontinue&cmtype=file&cmtitle=Category:"
-	url += wikimediaCat
-
 	var wikiPromises = []
 
+	// request images
 	wikiPromises.push(new Promise(function(res, rej) {
-
+		// get category contents (hopefully there is one)
+		var url = state.proxy + "https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&rawcontinue&cmtype=file&cmtitle=Category:"
+		url += wikimediaCat
 		$.get(url, function(data) {
-			var titles = ""
 
-			data.query.categorymembers.forEach(function(item) {
-				if (!titles)
-					titles = item.title
-				else
-					titles += "|" + item.title
+			// Stringify image titles
+			var titles = ""
+			data.query.categorymembers.forEach(function(item, index) {
+				titles += titles ? "|" + item.title : item.title
 			})
 
+			// get images
 			var url = state.proxy + "https://commons.wikimedia.org/w/api.php?action=query&titles=" + titles + "&prop=imageinfo&iiprop=url|size|extmetadata&format=json&rawcontinue"
-
 			$.get(url, function(data) {
-				
-				var imgs = []
-				if(!data.query){
+
+				if (!data.query) {
 					res()
 					return
 				}
 
+				// create image objects, storing only relevant metadata
+				var imgs = []
 				$.each(data.query.pages, function(index, item) {
-					var img = item.imageinfo[0]
-					if (img.extmetadata.Artist)
-						imgs.push({
-							url: img.url,
-							height: img.height,
-							width: img.width,
-							artist: cleanArtist(img.extmetadata.Artist.value),
-							licence: img.extmetadata.LicenseShortName.value,
-							licenceUrl: img.extmetadata.LicenseUrl ? img.extmetadata.LicenseUrl.value : "",
-						})
-				})
+						var img = item.imageinfo[0]
+						if (img.extmetadata.Artist)
+							imgs.push({
+								url: img.url,
+								descriptionurl: img.descriptionurl,
+								height: img.height,
+								width: img.width,
+								artist: cleanArtist(img.extmetadata.Artist.value), // Sometimes there come some HTML with the artists name, we don't want that.
+								licence: img.extmetadata.LicenseShortName.value,
+							})
+					})
+					// resolve images
 				res(imgs)
 			})
 		})
 	}))
 
+	// request article
 	wikiPromises.push(new Promise(function(res, rej) {
+		// get the articles first paragraph (hopefully wiki will redirect us from the latin name to the actual article)
 		var url = state.proxy + "https://de.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&explaintext=&iwurl=&rawcontinue=&titles=" + wikimediaCat + "&redirects="
-
 		$.get(url, function(data) {
-			
-			var url = "https://de.wikipedia.org/wiki/" + data.query.pages[Object.keys(data.query.pages)[0]].title
-			var extract = data.query.pages[Object.keys(data.query.pages)[0]].extract
-
+			// create and resolve article object
 			res({
-				url: url,
-				extract: extract
+				url: "https://de.wikipedia.org/wiki/" + data.query.pages[Object.keys(data.query.pages)[0]].title,
+				extract: data.query.pages[Object.keys(data.query.pages)[0]].extract,
+				title: data.query.pages[Object.keys(data.query.pages)[0]].title
 			})
 		})
 	}))
 
+	// resolve image and extract
 	Promise.all(wikiPromises).then(function(data) {
-		resolve({imgs: data[0], extract: data[1]})
+		resolve({
+			imgs: data[0],
+			extract: data[1]
+		})
 	})
 }
 
-function getDistricts(resolve, reject){
-	var url = state.proxy + "https://data.stadt-zuerich.ch/storage/f/stadtkreis/stadtkreis.json"
-
-	$.get(url, function(data) {
-		resolve(data)
+// --
+// getByUrl
+// --
+// get and resolve data from specified url (uses proxy if p.proxy is true, parses data if p.parse is true)
+// --
+function getByUrl(resolve, reject, url, p) {
+	!p && (p = {}) // create empty object if p is not defined
+	$.get(p.proxy ? state.proxy + url : url, function(data) {
+		resolve(p.parse ? JSON.parse(data) : data)
 	})
 }
 
-function getLocations(resolve, reject, name){
-	var url = "http://api.flaneur.io/baumkataster/trees/Baumname_LAT="+name
-
-	$.get(url, function(data) {
-		resolve(JSON.parse(data))
-	})
-}
-
-function tempTrees(resolve, reject, query){
-	var url = "http://api.flaneur.io/baumkataster/search/"+query+"/limit=15&lon="+state.user.location[0]+"&lat="+state.user.location[1]
+function searchTrees(resolve, reject, query) {
 	
-	$.get(url, function(data) {
-		
-		resolve(JSON.parse(data))
-	})
-}
 
-function searchAddresses(resolve, reject, query){
-	var url = "http://api.flaneur.io/zadressen/search/"+query+"/limit=15"
-	
 	$.get(url, function(data) {
 		resolve(JSON.parse(data))
 	})
 }
 
-function getZuerichsee(resolve, reject){
-	var url = "Zuerichsee.json"
+function searchAddresses(resolve, reject, query) {
+	var url = "http://api.flaneur.io/zadressen/search/" + query + "/limit=15"
 
 	$.get(url, function(data) {
-		resolve(data)
+		resolve(JSON.parse(data))
 	})
 }
