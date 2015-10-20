@@ -46,7 +46,7 @@ function initMap(resolve, reject) {
 	}).then(function() {
 
 		// add layers to map
-		[state.layers.map, state.layers.user, state.layers.trees, state.layers.aerial].forEach(function(layer) {
+		[state.layers.map, state.layers.aerial, state.layers.user, state.layers.trees].forEach(function(layer) {
 			map.addLayer(layer)
 		})
 		resolve()
@@ -143,7 +143,7 @@ function updateTrees(trees) {
 			dist: parseInt(tree.distance),
 			Baumnummer: tree.Baumnummer
 		})
-		feature.setStyle(state.satelite ? state.styles.treeAerial : state.styles.treeMap);
+		feature.setStyle(state.aerial ? state.styles.treeAerial : state.styles.treeMap);
 		features.trees.push(feature)
 		newFeatures.push(feature)
 	})
@@ -152,18 +152,20 @@ function updateTrees(trees) {
 
 // toggle layers
 function toggleLayers() {
-	state.satelite = !state.satelite
+	state.aerial = !state.aerial
 	$("body").toggleClass("satelite")
 
-	map.getLayers().setAt(state.satelite ? 3 : 0, state.layers.map)
-	map.getLayers().setAt(state.satelite ? 0 : 3, state.layers.aerial)
-	state.layers.map.setOpacity(state.satelite ? .44 : .4)
+	state.layers.map.setVisible(!state.aerial)
+	state.layers.aerial.setVisible(state.aerial)
+	// map.getLayers().setAt(state.aerial ? 3 : 0, state.layers.map)
+	// map.getLayers().setAt(state.aerial ? 0 : 3, state.layers.aerial)
+	state.layers.map.setOpacity(state.aerial ? .44 : .4)
 
 
 	features.trees.forEach(function(item) {
-		item.setStyle(state.satelite ? state.styles.treeAerial : state.styles.treeMap)
+		item.setStyle(state.aerial ? state.styles.treeAerial : state.styles.treeMap)
 	})
-	state.highlight.tree.setStyle(state.satelite ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight)
+	state.highlight.tree.setStyle(state.aerial ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight)
 }
 
 // add event handlers to map
@@ -226,28 +228,11 @@ function getWmtsLayers(resolve, reject, url) {
 
 			state.layers[wmtsLayer.Identifier == "UebersichtsplanAktuell" ? "map" : "aerial"] = new ol.layer.Tile({
 				source: new ol.source.WMTS(options),
-				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.22 : 1,
-				//visible: wmtsLayer.Identifier == "UebersichtsplanAktuell",
+				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.4 : 1,
+				visible: wmtsLayer.Identifier == "UebersichtsplanAktuell",
 			})
 		})
 
-		// Mask layers for preview
-		state.layers.map.on('precompose', function(event) {
-			if (state.satelite)
-				precompose(event.context)
-		})
-		state.layers.aerial.on('precompose', function(event) {
-			if (!state.satelite)
-				precompose(event.context)
-		})
-		state.layers.map.on('postcompose', function(event) {
-			if (state.satelite)
-				event.context.restore()
-		})
-		state.layers.aerial.on('postcompose', function(event) {
-			if (!state.satelite)
-				event.context.restore()
-		})
 		resolve()
 
 	}).fail(function(e, d, f, g, h) {
@@ -259,39 +244,6 @@ function getWmtsLayers(resolve, reject, url) {
 			resolve()
 		}
 	})
-}
-
-function precompose(ctx) {
-	var pixelRatio = window.devicePixelRatio
-	var drawRect = function(ctx) {
-		ctx.beginPath()
-		ctx.moveTo(2, 0)
-		ctx.lineTo(46, 0)
-		ctx.quadraticCurveTo(48, 0, 48, 2)
-		ctx.lineTo(48, 46)
-		ctx.quadraticCurveTo(48, 48, 46, 48)
-		ctx.lineTo(2, 48)
-		ctx.quadraticCurveTo(0, 48, 0, 46)
-		ctx.lineTo(0, 2)
-		ctx.quadraticCurveTo(0, 0, 4, 0)
-	}
-
-	ctx.save()
-	ctx.translate((state.desktop ? 6 : (ctx.canvas.width / 2) - 54) * pixelRatio, ctx.canvas.height - (state.desktop ? 54 : 114) * pixelRatio)
-	ctx.scale(pixelRatio, pixelRatio)
-
-	// draw shadow
-	ctx.fillStyle = "rgb(255,255,255)"
-	ctx.shadowColor = "rgba(0,0,0,0.5)"
-	ctx.shadowBlur = 4
-	drawRect(ctx)
-	ctx.fill()
-		// draw mask
-	ctx.shadowColor = "rgba(0,0,0,0)"
-	drawRect(ctx)
-	ctx.clip()
-
-	ctx.setTransform(1, 0, 0, 1, 0, 0)
 }
 
 // pan map to specified location (EPSG:4326)
@@ -317,7 +269,7 @@ function highlightTree(location, pan) {
 		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
 	})
 
-	state.highlight.tree.setStyle(state.satelite ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight);
+	state.highlight.tree.setStyle(state.aerial ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight);
 	state.layers.trees.getSource().addFeature(state.highlight.tree)
 
 	if (pan)

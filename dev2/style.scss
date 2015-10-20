@@ -232,6 +232,22 @@ body{
 		z-index: -2;
 	}
 
+	#mapchange{
+		width: 48px;
+		height: 48px;
+		position: fixed;
+		bottom: 160px;
+		right: 6px;
+		background: $white url(svg/aerial.png) center center no-repeat;
+		box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.50);
+		border-radius: 2px;
+		z-index: -2;
+
+		&.map{
+			background: $white url(svg/map.png) center center no-repeat;
+		}
+	}
+
 	#trees{
 		position: absolute;
 		top: 100%;
@@ -670,6 +686,11 @@ body{
 
 		#geolocation{
 			bottom: 60px;
+			left: 6px;
+		}
+
+		#mapchange{
+			bottom: 6px;
 			left: 6px;
 		}
 

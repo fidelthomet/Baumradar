@@ -32,7 +32,7 @@ var state = {
 	treeList: [],
 	wiki: {},
 	proxy: "https://cors-proxy.xiala.net/",
-	satelite: false,
+	aerial: false,
 	search: false,
 	searchTreesP: undefined,
 	searchAddressesP: undefined,
@@ -52,6 +52,7 @@ $(function() {
 		// Overwrite CSS for mobile devices (window height might change when scrolling)
 		$("#map").css("height", $("#map").height() + "px")
 		$("#geolocation").css("top", ($("#map").height() - 114) + "px")
+		$("#mapchange").css("top", ($("#map").height() - 114) + "px")
 	}
 
 	// initialize map (openlayers) and location (geolocation and heading)
@@ -203,6 +204,11 @@ function initEvents() {
 			panTo(state.user.location)
 			updateUser()
 		}
+	})
+
+	$("#mapchange").click(function() {
+		$(this).toggleClass("map")
+		toggleLayers()
 	})
 
 	// remove splashscreen after fadeout

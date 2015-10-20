@@ -168,6 +168,18 @@ body {
     box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
     border-radius: 2px;
     z-index: -2; }
+  body #mapchange {
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    bottom: 160px;
+    right: 6px;
+    background: #fff url(svg/aerial.png) center center no-repeat;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    z-index: -2; }
+    body #mapchange.map {
+      background: #fff url(svg/map.png) center center no-repeat; }
   body #trees {
     position: absolute;
     top: 100%;
@@ -473,6 +485,9 @@ body {
     height: 100%; }
   body #geolocation {
     bottom: 60px;
+    left: 6px; }
+  body #mapchange {
+    bottom: 6px;
     left: 6px; }
   body #results {
     width: 392px; } }
