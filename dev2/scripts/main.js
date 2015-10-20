@@ -40,7 +40,9 @@ var state = {
 	reqTiles: [],
 	ready: false,
 	autoRefresh: false,
-	highlight: {}
+	highlight: {},
+	layers: {},
+	styles: {}
 }
 
 $(function() {
@@ -78,6 +80,8 @@ function finishInit(trees) {
 	// reset view if user is to far away from any tree and therefore probably not in zurich
 	if(!trees.length){
 		panTo(state.user.defaultLocation, true)
+		state.geolocation = false
+		$("#geolocation").remove()
 		new Promise(refreshTrees).then(finishInit)
 		return
 	}

@@ -1,118 +1,138 @@
 var map,
-	treeLayer = new ol.layer.Vector(),
-	userLayer = new ol.layer.Vector(),
 	features = {},
-	treeStyles = {},
 	activeAddress
 
 
-// Initialize OpenLayers map and add WMTS-Layers from https://data.stadt-zuerich.ch
+// --
+// initMap
+// --
+// Initialize OpenLayers map
+// --
 function initMap(resolve, reject) {
 
-	state.layers = {
-		base: [],
-		mask: []
-	}
+	// init vector layers
+	state.layers.trees = new ol.layer.Vector()
+	state.layers.user = new ol.layer.Vector()
 
+	// Set projection to EPSG:21781, more info: http://epsg.io/21781
 	var projection = ol.proj.get('EPSG:21781')
 	projection.setExtent([420000, 30000, 900000, 350000])
 
-	var view = new ol.View({
-		projection: projection,
-		center: proj4('EPSG:4326', 'EPSG:21781', state.user.location),
-		zoom: 12,
-		minZoom: 10,
-		maxZoom: 15
-	})
-
+	// Set up Map
 	map = new ol.Map({
 		target: 'map',
-		view: view,
+		view: new ol.View({
+			projection: projection,
+			center: proj4('EPSG:4326', 'EPSG:21781', state.user.location),
+			zoom: 12,
+			minZoom: 10,
+			maxZoom: 15
+		}),
+		// disable rotation and doubleckick zoom
 		interactions: ol.interaction.defaults({
 			pinchRotate: false,
 			doubleClickZoom: false
 		}),
+		// disable Controlls
 		controls: []
 	});
 
+	// add event handlers
 	mapEventHandlers()
 
+	// get layers
 	new Promise(function(resolve, reject) {
 		getWmtsLayers(resolve, reject, config.url.wmtsXml)
 	}).then(function() {
-		var layers = [state.layers.map, userLayer, treeLayer, state.layers.aerial]
 
-		layers.forEach(function(layer) {
+		// add layers to map
+		[state.layers.map, state.layers.user, state.layers.trees, state.layers.aerial].forEach(function(layer) {
 			map.addLayer(layer)
 		})
 		resolve()
 	})
 }
 
-// Init user
+// --
+// initUser
+// --
+// intializes user feature
+// --
 function initUser() {
-	features.user = new ol.Feature({
-		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', state.user.location)),
-	})
-	features.user.setStyle(new ol.style.Style({
-		image: new ol.style.Icon(({
-			src: state.compass ? 'svg/user-dir-accent.svg' : 'svg/user-accent.svg',
-			size: [40, 40]
+	state.layers.user.setSource(new ol.source.Vector())
+
+	if (state.geolocation) {
+		// create feature, set style and add it to layer source
+		features.user = new ol.Feature({
+			geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', state.user.location)),
+		})
+		features.user.setStyle(new ol.style.Style({
+			image: new ol.style.Icon(({
+				src: state.compass ? 'svg/user-dir-accent.svg' : 'svg/user-accent.svg',
+				size: [40, 40]
+			}))
 		}))
-	}))
-
-
-	userLayer.setSource(new ol.source.Vector())
-	if (state.geolocation)
-		userLayer.getSource().addFeature(features.user)
+		state.layers.user.getSource().addFeature(features.user)
+	} else {
+		$("#geolocation, .left, .border").remove()
+		$(".right").css("margin", "0px")
+	}
 
 	// enable location tracking
 	state.ready = true
 }
 
-// Update position and orientation
+// --
+// updateUser
+// --
+// update position and heading of user icon
+// --
 function updateUser() {
 	features.user.getStyle().getImage().setRotation(state.user.heading * (Math.PI / 180))
 	features.user.setGeometry(new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', state.user.location)))
 }
 
-// Init and Update Trees
+// --
+// updateTrees
+// --
+// add trees to map
+// --
 function updateTrees(trees) {
 	if (!features.trees) {
 		// init tree features and tree styles
 		features.trees = []
 
-		treeStyles.lgreen = new ol.style.Style({
+		state.styles.treeMap = new ol.style.Style({
 			image: new ol.style.Icon(({
 				src: 'svg/tree-green.png',
-				opacity: .5,
+				opacity: .7,
 				scale: .5,
 			}))
 		});
 
-		treeStyles.green = new ol.style.Style({
+		state.styles.treeMapHighlight = new ol.style.Style({
 			image: new ol.style.Icon(({
 				src: 'svg/tree-green-active.png',
 				scale: .5,
 			}))
 		});
 
-		treeStyles.lwhite = new ol.style.Style({
+		state.styles.treeAerial = new ol.style.Style({
 			image: new ol.style.Icon(({
 				src: 'svg/tree-white.png',
-				opacity: .6,
+				opacity: .8,
 				scale: .5,
 			}))
 		});
 
-		treeStyles.white = new ol.style.Style({
+		state.styles.treeAerialHighlight = new ol.style.Style({
 			image: new ol.style.Icon(({
 				src: 'svg/tree-white-active.png',
 				scale: .5,
 			}))
 		});
 
-		treeLayer.setSource(new ol.source.Vector({}))
+		state.layers.trees.setSource(new ol.source.Vector({}))
 	}
 
 	// add tree features
@@ -123,11 +143,11 @@ function updateTrees(trees) {
 			dist: parseInt(tree.distance),
 			Baumnummer: tree.Baumnummer
 		})
-		feature.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen);
+		feature.setStyle(state.satelite ? state.styles.treeAerial : state.styles.treeMap);
 		features.trees.push(feature)
 		newFeatures.push(feature)
 	})
-	treeLayer.getSource().addFeatures(newFeatures)
+	state.layers.trees.getSource().addFeatures(newFeatures)
 }
 
 // toggle layers
@@ -135,15 +155,15 @@ function toggleLayers() {
 	state.satelite = !state.satelite
 	$("body").toggleClass("satelite")
 
-	map.getLayers().setAt(state.satelite ? 3 : 0 , state.layers.map)
-	map.getLayers().setAt(state.satelite ? 0 : 3 , state.layers.aerial)
-	state.layers.map.setOpacity(state.satelite ? .44 : .22)
+	map.getLayers().setAt(state.satelite ? 3 : 0, state.layers.map)
+	map.getLayers().setAt(state.satelite ? 0 : 3, state.layers.aerial)
+	state.layers.map.setOpacity(state.satelite ? .44 : .4)
 
 
 	features.trees.forEach(function(item) {
-		item.setStyle(state.satelite ? treeStyles.lwhite : treeStyles.lgreen)
+		item.setStyle(state.satelite ? state.styles.treeAerial : state.styles.treeMap)
 	})
-	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green)
+	state.highlight.tree.setStyle(state.satelite ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight)
 }
 
 // add event handlers to map
@@ -206,7 +226,8 @@ function getWmtsLayers(resolve, reject, url) {
 
 			state.layers[wmtsLayer.Identifier == "UebersichtsplanAktuell" ? "map" : "aerial"] = new ol.layer.Tile({
 				source: new ol.source.WMTS(options),
-				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.22 : 1
+				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.22 : 1,
+				//visible: wmtsLayer.Identifier == "UebersichtsplanAktuell",
 			})
 		})
 
@@ -290,14 +311,14 @@ function highlightTree(location, pan) {
 	state.tree = location
 
 	if (state.highlight.tree)
-		treeLayer.getSource().removeFeature(state.highlight.tree)
+		state.layers.trees.getSource().removeFeature(state.highlight.tree)
 
 	state.highlight.tree = new ol.Feature({
 		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
 	})
 
-	state.highlight.tree.setStyle(state.satelite ? treeStyles.white : treeStyles.green);
-	treeLayer.getSource().addFeature(state.highlight.tree)
+	state.highlight.tree.setStyle(state.satelite ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight);
+	state.layers.trees.getSource().addFeature(state.highlight.tree)
 
 	if (pan)
 		panTo(location)

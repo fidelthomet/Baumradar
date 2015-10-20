@@ -301,8 +301,11 @@ body{
 				}
 
 				.right{
-					margin-left: 49px;
 					padding: 6px 5px 6px 10px;
+
+					&.geo{
+						margin-left: 49px;
+					}
 
 					.ger{
 						font-size: 24px;

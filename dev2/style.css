@@ -219,8 +219,9 @@ body {
             bottom: 6px;
             background: #fff; }
         body #trees .tree .title .right {
-          margin-left: 49px;
           padding: 6px 5px 6px 10px; }
+          body #trees .tree .title .right.geo {
+            margin-left: 49px; }
           body #trees .tree .title .right .ger {
             font-size: 24px;
             line-height: 26px;

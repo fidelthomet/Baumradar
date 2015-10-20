@@ -59,7 +59,7 @@ function showResults(data) {
 		state.watchposition = false;
 
 		if (activeAddress) {
-			userLayer.getSource().removeFeature(activeAddress)
+			state.layers.user.getSource().removeFeature(activeAddress)
 		}
 
 		activeAddress = new ol.Feature({
@@ -74,7 +74,7 @@ function showResults(data) {
 		});
 
 		activeAddress.setStyle(style)
-		userLayer.getSource().addFeature(activeAddress)
+		state.layers.user.getSource().addFeature(activeAddress)
 
 		panTo([$(this).attr("lon"), $(this).attr("lat")]);
 		hideSearch()
