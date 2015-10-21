@@ -474,6 +474,7 @@ body{
 			width: 100%;
 			height: 270px;
 			pointer-events: none;
+			margin-bottom: 12px;
 		}
 	}
 
@@ -507,19 +508,35 @@ body{
 			padding: 12px;
 			bottom: 0px;
 			font-size: 12px;
-			color: $white;
+
+			a{
+				text-decoration: none;
+				color: $white;
+			}
 		}
 	}
 
 	#splashscreen{
 		position: fixed;
-		background-color: $white;
 		width: 100%;
 		height: 100%;
 		top: 0px;
 		left: 0px;
 		z-index: 750;
 		transition: opacity .4s;
+		background: $green url(svg/splashbottom.svg) no-repeat left bottom;
+		background-size: 100% auto;
+
+		.text{
+			display: none;
+			font-size: 24px;
+			font-weight: 500;
+			color: $white;
+			position: absolute;
+			left: 10px;
+			top: 12px;
+			transition: opacity .4s;
+		}
 
 		&.hide{
 			opacity: 0;
@@ -527,14 +544,16 @@ body{
 		}
 		
 		.ani{
-			background: url(svg/tree-green.svg) center center no-repeat;
-			animation-name: ani1;
+			background: url(svg/tree-white.svg) center center no-repeat;
 			animation-iteration-count: infinite;
 			position: fixed;
 			height: 30px;
 			width: 30px;
 			top: 50%;
 			left: 50%;
+			transition: opacity .4s;
+			opacity: 0;
+			
 
 			&.absolute{
 				position: absolute;
@@ -551,14 +570,12 @@ body{
 			animation-duration: 4s;
 			margin-top: -15px;
 			margin-left: -50px;
-			animation-name: ani2;
 		}
 
 		.ani3{
 			animation-duration: 2.5s;
 			margin-top: -15px;
 			margin-left: 20px;
-			animation-name: ani2;
 		}
 
 		.ani4{
@@ -576,7 +593,6 @@ body{
 		.ani6{
 			animation-duration: 1.5s;
 			margin-top: -50px;
-			animation-name: ani2;
 			margin-left: 20px;
 		}
 
@@ -594,7 +610,6 @@ body{
 
 		.ani9{
 			animation-duration: 1.7s;
-			animation-name: ani2;
 			margin-top: 20px;
 			margin-left: 20px;
 		}
@@ -651,15 +666,15 @@ body{
 
 @keyframes ani2 {
 	0% {
-		opacity: 1;
-	}
-
-	75% {
 		opacity: 0;
 	}
 
-	100% {
+	75% {
 		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
 	}
 }
 

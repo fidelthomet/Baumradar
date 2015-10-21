@@ -5,9 +5,8 @@
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="playground" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-        <g id="Rectangle-6-Copy-4-+-Oval-1-Copy-20-Copy-Copy-Copy-Copy" sketch:type="MSLayerGroup" transform="translate(3.000000, 3.000000)" stroke="#FF4E92" stroke-width="2">
-            <path d="M17,5 C23.627417,5 29,10.3711258 29,17 C29,23.627417 23.6288742,29 17,29 L6.70678084,29 C5.76415181,29 5,28.2286593 5,27.2932192 L5,17 C5,10.372583 10.3711258,5 17,5 Z" id="Rectangle-6-Copy-4" fill-opacity="0.5" fill="#FF4E92" sketch:type="MSShapeGroup" transform="translate(17.000000, 17.000000) rotate(-225.000000) translate(-17.000000, -17.000000) "></path>
-            <circle id="Oval-1-Copy-24" sketch:type="MSShapeGroup" cx="17" cy="17" r="2"></circle>
+        <g id="Rectangle-6-Copy-4-+-Oval-1-Copy-20-Copy-Copy-Copy-Copy" sketch:type="MSLayerGroup" transform="translate(7.000000, 3.000000)" stroke="#FF4E92" stroke-width="2" fill="#FFA6C8">
+            <path d="M21.4852814,25.4852814 C16.7989899,30.1715729 9.20204051,30.1726033 4.51471863,25.4852814 C-0.171572875,20.7989899 -0.172603262,13.2020405 4.51471863,8.51471863 L11.7931237,1.23631355 C12.4596631,0.569774178 13.5454203,0.574857511 14.2068763,1.23631355 L21.4852814,8.51471863 C26.1715729,13.2010101 26.1726033,20.7979595 21.4852814,25.4852814 Z M13,18.0001932 C13.5523915,18.0001932 14.0001932,17.5523915 14.0001932,17 C14.0001932,16.4476085 13.5523915,15.9998068 13,15.9998068 C12.4476085,15.9998068 11.9998068,16.4476085 11.9998068,17 C11.9998068,17.5523915 12.4476085,18.0001932 13,18.0001932 Z" id="Rectangle-6-Copy-4" sketch:type="MSShapeGroup"></path>
         </g>
     </g>
 </svg>

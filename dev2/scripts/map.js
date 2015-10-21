@@ -9,7 +9,6 @@ var map,
 // Initialize OpenLayers map
 // --
 function initMap(resolve, reject) {
-
 	// init vector layers
 	state.layers.trees = new ol.layer.Vector()
 	state.layers.user = new ol.layer.Vector()
@@ -38,7 +37,7 @@ function initMap(resolve, reject) {
 	});
 
 	// add event handlers
-	mapEventHandlers()
+	initMapEvents()
 
 	// get layers
 	new Promise(function(resolve, reject) {
@@ -135,61 +134,64 @@ function updateTrees(trees) {
 		state.layers.trees.setSource(new ol.source.Vector({}))
 	}
 
-	// add tree features
-	var newFeatures = []
+	// create array of new features
+	var newTrees = []
 	trees.forEach(function(tree) {
-		var feature = new ol.Feature({
-			geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [tree.lon, tree.lat])),
-			dist: parseInt(tree.distance),
-			Baumnummer: tree.Baumnummer
+			var feature = new ol.Feature({
+				geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', [tree.lon, tree.lat])),
+				dist: parseInt(tree.distance),
+				Baumnummer: tree.Baumnummer
+			})
+			feature.setStyle(state.aerial ? state.styles.treeAerial : state.styles.treeMap);
+			features.trees.push(feature)
+			newTrees.push(feature)
 		})
-		feature.setStyle(state.aerial ? state.styles.treeAerial : state.styles.treeMap);
-		features.trees.push(feature)
-		newFeatures.push(feature)
-	})
-	state.layers.trees.getSource().addFeatures(newFeatures)
+		// add new features to map
+	state.layers.trees.getSource().addFeatures(newTrees)
 }
 
-// toggle layers
+// --
+// togglelayers
+// --
+// switch between default and aerial map
+// --
 function toggleLayers() {
 	state.aerial = !state.aerial
-	$("body").toggleClass("satelite")
 
+	// toggle layers
 	state.layers.map.setVisible(!state.aerial)
 	state.layers.aerial.setVisible(state.aerial)
-	// map.getLayers().setAt(state.aerial ? 3 : 0, state.layers.map)
-	// map.getLayers().setAt(state.aerial ? 0 : 3, state.layers.aerial)
-	state.layers.map.setOpacity(state.aerial ? .44 : .4)
 
-
+	// change style of tree features
 	features.trees.forEach(function(item) {
 		item.setStyle(state.aerial ? state.styles.treeAerial : state.styles.treeMap)
 	})
 	state.highlight.tree.setStyle(state.aerial ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight)
 }
 
-// add event handlers to map
-function mapEventHandlers() {
+// --
+// initMapEvents
+// --
+// add map related event handlers
+// --
+function initMapEvents() {
 
 	map.on('click', function(e) {
-		// Check for map change
-		if (!state.desktop) {
-			if (e.pixel[0] > window.innerWidth - 54 && e.pixel[0] < window.innerWidth - 6 && e.pixel[1] > window.innerHeight - 174 && e.pixel[1] < window.innerHeight - 126) {
-				toggleLayers()
-				return
-			}
-		} else {
-			if (e.pixel[0] > 6 && e.pixel[0] < 54 && e.pixel[1] > window.innerHeight - 54 && e.pixel[1] < window.innerHeight - 6) {
-				toggleLayers()
-				return
-			}
-		}
 
-		// Check for selected feature
-		var feature = map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
-			return feature;
+		// detect click on features (find the closest for multiple hits)
+		var feature
+		var dist
+		map.forEachFeatureAtPixel(e.pixel, function(f, l) {
+			var pixel = map.getPixelFromCoordinate(f.getGeometry().getCoordinates());
+			var pixelDist = (e.pixel[0] - pixel[0]) * (e.pixel[0] - pixel[0]) + (e.pixel[1] - pixel[1]) * (e.pixel[1] - pixel[1])
+
+			if (!dist || pixelDist < dist) {
+				dist = pixelDist
+				feature = f
+			}
 		})
 
+		// highlight tree and get details
 		if (feature) {
 			if (feature.getProperties().Baumnummer) {
 				state.watchposition = false;
@@ -199,17 +201,23 @@ function mapEventHandlers() {
 		}
 	})
 
+	// disable that map follows user
 	map.on("pointerdrag", function() {
 		state.watchposition = false;
 	})
 
+	// refresh trees
 	map.on("moveend", function() {
 		if (state.autoRefresh)
 			refreshTrees(proj4('EPSG:21781', 'EPSG:4326', map.getView().getCenter()))
 	})
 }
 
-// Generate WMTS Layers
+// --
+// getWmtsLayers
+// --
+// get WMTS Metadata and create map layers
+// --
 function getWmtsLayers(resolve, reject, url) {
 	$.get(url).success(function(data) {
 
@@ -219,13 +227,16 @@ function getWmtsLayers(resolve, reject, url) {
 		delete capabilities.OperationsMetadata.GetTile
 
 		capabilities.Contents.Layer.forEach(function(wmtsLayer, index) {
-			if (wmtsLayer.Identifier != "LuftbildHybrid2011" && wmtsLayer.Identifier != "UebersichtsplanAktuell")
+			// only create layers for "Luftbild_2011" and "UebersichtsplanAktuell"
+			if (wmtsLayer.Identifier != "Luftbild_2011" && wmtsLayer.Identifier != "UebersichtsplanAktuell")
 				return
 
+			// create options from capabilities
 			var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
 				layer: wmtsLayer.Identifier
 			})
 
+			// set layer
 			state.layers[wmtsLayer.Identifier == "UebersichtsplanAktuell" ? "map" : "aerial"] = new ol.layer.Tile({
 				source: new ol.source.WMTS(options),
 				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.4 : 1,
@@ -233,20 +244,33 @@ function getWmtsLayers(resolve, reject, url) {
 			})
 		})
 
+		state.tilesLoadEnd = new Promise(function(resolve, reject){
+			state.tilesLoadEndResolve = resolve
+		})
+
+		state.layers.map.getSource().on("tileloadstart", function(e){
+			state.tileCount ++
+		})
+
+		state.layers.map.getSource().on("tileloadend", function(e){
+			state.tileCount --
+			if(!state.tileCount){
+				state.tilesLoadEndResolve()
+			}
+		})
+
 		resolve()
 
-	}).fail(function(e, d, f, g, h) {
-		if (!state.loadingXmlFailed) {
-			state.loadingXmlFailed = true
-			getWmtsLayers(resolve, reject, config.url.wmtsXmlLocal)
-		} else {
-			console.log("failed for real")
-			resolve()
-		}
+	}).fail(function() {
+		goToFail("Kartenmaterial konnte nicht geladen, bitte später erneut versuchen")
 	})
 }
 
+// --
+// panTo
+// --
 // pan map to specified location (EPSG:4326)
+// --
 function panTo(center, skipAnimation) {
 	if (!skipAnimation) {
 		var pan = ol.animation.pan({
@@ -258,17 +282,24 @@ function panTo(center, skipAnimation) {
 	map.getView().setCenter(proj4('EPSG:4326', 'EPSG:21781', center))
 }
 
-
+// --
+// highlightTree
+// --
+// add highlighted tree as new feature at specified location
+// --
 function highlightTree(location, pan) {
 	state.tree = location
 
+	// remove old highlighted tree
 	if (state.highlight.tree)
 		state.layers.trees.getSource().removeFeature(state.highlight.tree)
 
+	// create new one
 	state.highlight.tree = new ol.Feature({
 		geometry: new ol.geom.Point(proj4('EPSG:4326', 'EPSG:21781', location)),
 	})
 
+	// set style, add features
 	state.highlight.tree.setStyle(state.aerial ? state.styles.treeAerialHighlight : state.styles.treeMapHighlight);
 	state.layers.trees.getSource().addFeature(state.highlight.tree)
 

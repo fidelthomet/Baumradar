@@ -340,7 +340,8 @@ body {
     body #trees #overview {
       width: 100%;
       height: 270px;
-      pointer-events: none; }
+      pointer-events: none;
+      margin-bottom: 12px; }
   body #imgDetail {
     background: #000 center center no-repeat;
     background-size: contain;
@@ -365,29 +366,42 @@ body {
       position: fixed;
       padding: 12px;
       bottom: 0px;
-      font-size: 12px;
-      color: #fff; }
+      font-size: 12px; }
+      body #imgDetail .licence a {
+        text-decoration: none;
+        color: #fff; }
   body #splashscreen {
     position: fixed;
-    background-color: #fff;
     width: 100%;
     height: 100%;
     top: 0px;
     left: 0px;
     z-index: 750;
-    transition: opacity .4s; }
+    transition: opacity .4s;
+    background: #2DD693 url(svg/splashbottom.svg) no-repeat left bottom;
+    background-size: 100% auto; }
+    body #splashscreen .text {
+      display: none;
+      font-size: 24px;
+      font-weight: 500;
+      color: #fff;
+      position: absolute;
+      left: 10px;
+      top: 12px;
+      transition: opacity .4s; }
     body #splashscreen.hide {
       opacity: 0;
       pointer-events: none; }
     body #splashscreen .ani {
-      background: url(svg/tree-green.svg) center center no-repeat;
-      animation-name: ani1;
+      background: url(svg/tree-white.svg) center center no-repeat;
       animation-iteration-count: infinite;
       position: fixed;
       height: 30px;
       width: 30px;
       top: 50%;
-      left: 50%; }
+      left: 50%;
+      transition: opacity .4s;
+      opacity: 0; }
       body #splashscreen .ani.absolute {
         position: absolute; }
     body #splashscreen .ani1 {
@@ -397,13 +411,11 @@ body {
     body #splashscreen .ani2 {
       animation-duration: 4s;
       margin-top: -15px;
-      margin-left: -50px;
-      animation-name: ani2; }
+      margin-left: -50px; }
     body #splashscreen .ani3 {
       animation-duration: 2.5s;
       margin-top: -15px;
-      margin-left: 20px;
-      animation-name: ani2; }
+      margin-left: 20px; }
     body #splashscreen .ani4 {
       animation-duration: 3.2s;
       margin-top: -50px;
@@ -415,7 +427,6 @@ body {
     body #splashscreen .ani6 {
       animation-duration: 1.5s;
       margin-top: -50px;
-      animation-name: ani2;
       margin-left: 20px; }
     body #splashscreen .ani7 {
       animation-duration: 2.8s;
@@ -427,7 +438,6 @@ body {
       margin-left: -50px; }
     body #splashscreen .ani9 {
       animation-duration: 1.7s;
-      animation-name: ani2;
       margin-top: 20px;
       margin-left: 20px; }
   body #info {
@@ -463,11 +473,11 @@ body {
     opacity: 0; } }
 @keyframes ani2 {
   0% {
-    opacity: 1; }
-  75% {
     opacity: 0; }
+  75% {
+    opacity: 1; }
   100% {
-    opacity: 1; } }
+    opacity: 0; } }
 @media (min-width: 800px) {
   body header {
     width: 380px; }

@@ -5,9 +5,8 @@
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="playground" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-        <g id="Oval-1-Copy-16-+-Oval-1-Copy-18-Copy-Copy-Copy" sketch:type="MSLayerGroup" transform="translate(9.000000, 9.000000)" stroke="#FF4E92" stroke-width="2">
-            <circle id="Oval-1-Copy-29" fill-opacity="0.5" fill="#FF4E92" sketch:type="MSShapeGroup" cx="11" cy="11" r="11"></circle>
-            <circle id="Oval-1-Copy-30" sketch:type="MSShapeGroup" cx="11" cy="11" r="2"></circle>
+        <g id="Oval-1-Copy-16-+-Oval-1-Copy-18-Copy-Copy-Copy" sketch:type="MSLayerGroup" transform="translate(9.000000, 9.000000)" stroke="#FF4E92" stroke-width="2" fill="#FFA6C8">
+            <path d="M11,22 C17.0751322,22 22,17.0751322 22,11 C22,4.92486775 17.0751322,0 11,0 C4.92486775,0 0,4.92486775 0,11 C0,17.0751322 4.92486775,22 11,22 Z M11,13 C12.1045695,13 13,12.1045695 13,11 C13,9.8954305 12.1045695,9 11,9 C9.8954305,9 9,9.8954305 9,11 C9,12.1045695 9.8954305,13 11,13 Z" id="Oval-1-Copy-29" sketch:type="MSShapeGroup"></path>
         </g>
     </g>
 </svg>
