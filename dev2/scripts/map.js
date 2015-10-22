@@ -67,7 +67,7 @@ function initUser() {
 		})
 		features.user.setStyle(new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: state.compass ? 'svg/user-dir-accent.svg' : 'svg/user-accent.svg',
+				src: state.compass ? 'icons/user-dir-accent.svg' : 'icons/user-accent.svg',
 				size: [40, 40]
 			}))
 		}))
@@ -103,7 +103,7 @@ function updateTrees(trees) {
 
 		state.styles.treeMap = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/tree-green.png',
+				src: 'icons/tree-green.png',
 				opacity: .7,
 				scale: .5,
 			}))
@@ -111,14 +111,14 @@ function updateTrees(trees) {
 
 		state.styles.treeMapHighlight = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/tree-green-active.png',
+				src: 'icons/tree-green-active.png',
 				scale: .5,
 			}))
 		});
 
 		state.styles.treeAerial = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/tree-white.png',
+				src: 'icons/tree-white.png',
 				opacity: .8,
 				scale: .5,
 			}))
@@ -126,7 +126,7 @@ function updateTrees(trees) {
 
 		state.styles.treeAerialHighlight = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/tree-white-active.png',
+				src: 'icons/tree-white-active.png',
 				scale: .5,
 			}))
 		});

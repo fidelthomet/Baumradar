@@ -41,7 +41,7 @@ function initLocation(resolve, reject) {
 					if (features.user) {
 						features.user.setStyle(new ol.style.Style({
 							image: new ol.style.Icon(({
-								src: 'svg/user-dir-accent.svg',
+								src: 'icons/user-dir-accent.svg',
 								size: [40, 40]
 							}))
 						}))

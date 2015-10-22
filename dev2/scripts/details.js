@@ -109,7 +109,6 @@ function addWikiDetails(Baumnummer, wiki) {
 			// append images and add eventlistener to enable fullscreen view
 			$("#" + Baumnummer + " .images").html(domImgs)
 			$("#" + Baumnummer + " .images .img").click(function() {
-				console.log($(this).attr("attr-bg"))
 				$("#imgDetail").css("background-image", "url(" + $(this).attr("attr-bg") + ")")
 				$("#imgDetail").addClass("active")
 				$("#imgDetail .licence a").html("Image by " + $(this).attr("attr-artist") + "<br/>Licence: " + $(this).attr("attr-licence"))

@@ -113,7 +113,7 @@ function createTreeLayer(locations, tree) {
 	// set styles
 	var style = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/tree-min.png',
+			src: 'icons/tree-min.png',
 			opacity: .5,
 			scale: .5,
 		}))
@@ -122,7 +122,7 @@ function createTreeLayer(locations, tree) {
 
 	var mapCenterStyle = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/overview-center.png',
+			src: 'icons/overview-center.png',
 			scale: .5,
 		}))
 	});
