@@ -1,10 +1,17 @@
+// --
+// initLocation
+// --
+// do all the stuff that is related to geolocation and orientation
+// --
 function initLocation(resolve, reject) {
 	if ("geolocation" in navigator) {
+		// use watchposition to detect if user moves around
 		navigator.geolocation.watchPosition(function(position) {
 
 			state.user.location = [position.coords.longitude, position.coords.latitude]
 			state.geolocation = true
 
+			// update user
 			if (state.ready) {
 				if (state.watchposition) {
 					panTo(state.user.location)
@@ -23,6 +30,7 @@ function initLocation(resolve, reject) {
 
 	}
 
+	// look for compass heading and do related stuff
 	if (window.DeviceOrientationEvent) {
 		window.addEventListener('deviceorientation', function(eventData) {
 
@@ -33,7 +41,7 @@ function initLocation(resolve, reject) {
 					if (features.user) {
 						features.user.setStyle(new ol.style.Style({
 							image: new ol.style.Icon(({
-								src: 'svg/user-dir-accent.svg',
+								src: 'icons/user-dir-accent.svg',
 								size: [40, 40]
 							}))
 						}))

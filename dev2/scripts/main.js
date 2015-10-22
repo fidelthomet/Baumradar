@@ -1,16 +1,16 @@
 var config = {
-	url : {
+	url: {
 		// MAP
-		wmtsXml : "https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml",
-		wmtsXmlLocal : "wmts.xml", // fallback
+		wmtsXml: "https://cors-proxy.xiala.net/http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml",
+		wmtsXmlLocal: "wmts.xml", // fallback
 		// API - Search
-		searchTrees : "http://api.flaneur.io/baumkataster/search/{query}/limit=15&lon={lon}&lat={lat}",
-		searchAddresses : "http://api.flaneur.io/zadressen/search/{query}/limit=15"
+		searchTrees: "http://api.flaneur.io/baumkataster/search/{query}/limit=15&lon={lon}&lat={lat}",
+		searchAddresses: "http://api.flaneur.io/zadressen/search/{query}/limit=15"
 	},
-	dom : {
+	dom: {
 		// SEARCH - Results
-		resultTree : '<div class="rTreeItem" treeId="{Baumnummer}" lon="{lon}" lat="{lat}"><div class="rTitle">{Baumname_D}</div><div class="rLat">{Baumname_LAT}</div><div class="rDetails">{dist} · {Strasse} · {Quartier}</div></div>',
-		resultAddress : '<div class="rAddressItem" lon="{lon}" lat="{lat}"><div class="rTitle">{Adresse}</div><div class="rDetails">{dist} · {PLZ} · {StatQuartier}</div></div>',
+		resultTree: '<div class="rTreeItem" treeId="{Baumnummer}" lon="{lon}" lat="{lat}"><div class="rTitle">{Baumname_D}</div><div class="rLat">{Baumname_LAT}</div><div class="rDetails">{dist} · {Strasse} · {Quartier}</div></div>',
+		resultAddress: '<div class="rAddressItem" lon="{lon}" lat="{lat}"><div class="rTitle">{Adresse}</div><div class="rDetails">{dist} · {PLZ} · {StatQuartier}</div></div>',
 	}
 }
 
@@ -19,8 +19,8 @@ var state = {
 	geolocation: false,
 	compass: false,
 	user: {
-		location: [8.545953265970327, 47.364551977441565],
-		defaultLocation: [8.545953265970327, 47.364551977441565],
+		location: [8.545079, 47.366989],
+		defaultLocation: [8.545079, 47.366989],
 		heading: 0
 	},
 	lastRequest: [8.545953265970327, 47.364551977441565],
@@ -32,11 +32,12 @@ var state = {
 	treeList: [],
 	wiki: {},
 	proxy: "https://cors-proxy.xiala.net/",
-	satelite: false,
+	aerial: false,
 	search: false,
 	searchTreesP: undefined,
 	searchAddressesP: undefined,
 	tileSize: 200,
+	tileCount: 0,
 	reqTiles: [],
 	ready: false,
 	autoRefresh: false,
@@ -46,39 +47,74 @@ var state = {
 }
 
 $(function() {
+	if (localStorage.getItem("geo")) {
+		init(true)
+	} else {
+		$("#splashscreen .text").show()
+		$("#allowgeo").click(function() {
+			init(true)
+			$("#splashscreen .text").css("opacity", 0)
+			localStorage.setItem("geo", true)
+		})
+		$("#denygeo").click(function() {
+			$("#splashscreen .text").css("opacity", 0)
+			init(false)
+		})
+	}
+})
+
+// --
+// init
+// --
+// initializes everything
+// --
+function init(askForLocation) {
+	// show (fake) progress bar
+	NProgress.start();
+	$("#splashscreen .ani").each(function(i, el){
+		$(el).css("animation-name", Math.random() < 5 ? "ani1" : "ani2")
+	})
 	// Detect Mobile/Desktop Devices
 	state.desktop = document.documentElement.clientWidth >= 800 ? true : false
 	if (!state.desktop) {
 		// Overwrite CSS for mobile devices (window height might change when scrolling)
 		$("#map").css("height", $("#map").height() + "px")
 		$("#geolocation").css("top", ($("#map").height() - 114) + "px")
+		$("#mapchange").css("top", ($("#map").height() - 114) + "px")
 	}
 
 	// initialize map (openlayers) and location (geolocation and heading)
 	var initPromises = []
 	initPromises.push(new Promise(initMap))
-	initPromises.push(new Promise(initLocation))
+	if (askForLocation)
+		initPromises.push(new Promise(initLocation))
 
 	Promise.all(initPromises).then(function() {
-		// finish initialization // center map on user location 
+		// finish initialization 
+		// center map on user location, show map, draw user 
 		panTo(state.user.location, true)
+		state.layers.map.setVisible(true)
 		initUser()
 
-		// Get trees for current location, then finish init
-		new Promise(refreshTrees).then(finishInit)
+		// Get trees for current location, then finish init (or wait until first map tile is loaded)$
+		Promise.all([new Promise(refreshTrees), state.tilesLoadEnd]).then(finishInit)
 	})
 
 	initEvents()
-})
+}
 
 // --
 // finishInit
 // --
 // finishes initialization
 // --
-function finishInit(trees) {
+function finishInit(arr) {
+	// finish progress bar
+	NProgress.done();
+
+	var trees = arr[0]
 	// reset view if user is to far away from any tree and therefore probably not in zurich
-	if(!trees.length){
+	if (!trees.length) {
 		panTo(state.user.defaultLocation, true)
 		state.geolocation = false
 		$("#geolocation").remove()
@@ -90,10 +126,9 @@ function finishInit(trees) {
 	var closestTree = sortByDist(trees)[0]
 	highlightTree([closestTree.lon, closestTree.lat])
 	details(closestTree.Baumnummer)
-	
+
 	// hide splashscreen
 	$("#splashscreen").addClass("hide")
-
 	// automaticly refresh trees if map section changes
 	state.autoRefresh = true
 }
@@ -205,9 +240,21 @@ function initEvents() {
 		}
 	})
 
+	$("#mapchange").click(function() {
+		$(this).toggleClass("map")
+		toggleLayers()
+	})
+
 	// remove splashscreen after fadeout
 	$("#splashscreen").on("transitionend", function() {
 		$(this).remove()
+	})
+	// but not if other elements fade out
+	$("#splashscreen .text").on("transitionend", function(e) {
+		e.stopPropagation()
+	})
+	$("#splashscreen .ani").on("transitionend", function(e) {
+		e.stopPropagation()
 	})
 
 	// toggle search state
@@ -224,7 +271,7 @@ function initEvents() {
 
 	// enter info state
 	$("header .btOpt").click(function() {
-		$("#info").addClass("active")
+		$("#info").toggleClass("active")
 	})
 
 	// leave info state
@@ -242,15 +289,13 @@ function initEvents() {
 
 	// search
 	$("header .input").on("keyup", function() {
-		if ($(this).html()) {
+		var input = $(this).html()
+		if (input) {
 			$("header .search").addClass("hide")
-			if ($(this).html().length >= 3) {
-				searchFor($(this).html())
-			} else {
-				$("#results #rInner").html("")
-			}
+			searchFor(input.replace(/\&nbsp;/g, " ")) // replace '&nbsp;' with ' '
 		} else {
 			$("header .search").removeClass("hide")
+			$("#results #rInner").html("")
 		}
 	})
 
@@ -260,3 +305,6 @@ function initEvents() {
 	})
 }
 
+function goToFail(msg) {
+	alert(msg)
+}

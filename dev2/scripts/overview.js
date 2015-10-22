@@ -1,8 +1,12 @@
-var overview, tLayer
-
+var overview
+// --
+// initOverview
+// --
+// generate overview map
+// --
 function initOverview(tree) {
 
-	// get necessary data
+	// get necessary data (all trees which have the same Baumname_LAT, a map of zurichs districts and a geojso file)
 	var overviewPromises = []
 	overviewPromises.push(new Promise(function(res, rej) {
 		getByUrl(res, rej, "http://api.flaneur.io/baumkataster/trees/Baumname_LAT=" + tree.Baumname_LAT, {parse: true})
@@ -11,17 +15,19 @@ function initOverview(tree) {
 		getByUrl(res, rej, "https://data.stadt-zuerich.ch/storage/f/stadtkreis/stadtkreis.json", {proxy: true})
 	}))
 	overviewPromises.push(new Promise(function(res, rej) {
-		getByUrl(res, rej, "Zuerichsee.json")
+		getByUrl(res, rej, "data/Zuerichsee.json")
 	}))
 
 	Promise.all(overviewPromises).then(function(data) {
 		var locations = data[0]
 		var districts = data[1]
 		var zuerichsee = data[2]
+
+		// set feature styles
 		var styles = [
 			new ol.style.Style({
 				stroke: new ol.style.Stroke({
-					color: '#C8C8C8',
+					color: '#CCCCCC',
 					width: .5
 				}),
 			}),
@@ -39,7 +45,7 @@ function initOverview(tree) {
 		var stylesLake = [
 			new ol.style.Style({
 				stroke: new ol.style.Stroke({
-					color: '#C8C8C8',
+					color: '#CCCCCC',
 					width: .5
 				}),
 				fill: new ol.style.Fill({
@@ -48,7 +54,7 @@ function initOverview(tree) {
 			}),
 		]
 
-
+		// create layers for districts, lake and trees
 		var source = new ol.source.Vector({
 			features: (new ol.format.GeoJSON()).readFeatures(districts, {
 				featureProjection: "EPSG:3857"
@@ -75,50 +81,7 @@ function initOverview(tree) {
 			style: stylesLake
 		});
 
-
-
-		var extent = map.getView().calculateExtent(map.getSize())
-
-		var p = [
-			proj4('EPSG:21781', 'EPSG:3857', [extent[0], extent[1]]),
-			proj4('EPSG:21781', 'EPSG:3857', [extent[0], extent[3]]),
-			proj4('EPSG:21781', 'EPSG:3857', [extent[2], extent[3]]),
-			proj4('EPSG:21781', 'EPSG:3857', [extent[2], extent[1]]),
-		]
-
-		var extentGeoJson = {
-			'type': 'FeatureCollection',
-			'crs': {
-				'type': 'name',
-				'properties': {
-					'name': 'EPSG:3857'
-				}
-			},
-			'features': [{
-				'type': 'Feature',
-				'geometry': {
-					'type': 'Polygon',
-					'coordinates': [
-						p
-					]
-				}
-			}]
-		}
-
-		var sourceExtent = new ol.source.Vector({
-			features: (new ol.format.GeoJSON()).readFeatures(extentGeoJson, {
-				featureProjection: "EPSG:3857"
-			}),
-			projection: 'EPSG:3857'
-		});
-
-		var layerExtent = new ol.layer.Vector({
-			source: sourceExtent,
-			projection: 'EPSG:3857',
-			style: stylesExtent
-		});
-
-		tLayer = new ol.layer.Vector()
+		var tLayer = new ol.layer.Vector()
 
 		overview = new ol.Map({
 			layers: [layer, layerLake, tLayer],
@@ -127,56 +90,45 @@ function initOverview(tree) {
 				center: [8.536999947103082, 47.37367243001017],
 				projection: 'EPSG:3857',
 			}),
-			interactions: ol.interaction.defaults({
-				dragPan: false,
-				mouseWheelZoom: false,
-				pinchZoom: false,
-				pinchRotate: false,
-				doubleClickZoom: false
-			}),
+			// disable all interactions and controls
+			interactions: [],
 			controls: []
 		});
 
 		overview.getView().fit(
 			source.getExtent(), /** @type {ol.Size} */ (overview.getSize()));
 
-		createTreeLayer(locations, tree)
+		// add trees
+		tLayer.setSource(createTreeLayer(locations, tree))
 	})
 
 }
 
-function updateOverview() {
-
-}
-
+// --
+// createTreeLayer
+// --
+// creates source for tLayer
+// --
 function createTreeLayer(locations, tree) {
+	// set styles
 	var style = new ol.style.Style({
-		// image: new ol.style.Circle({
-		// 	radius: 1,
-		// 	fill: new ol.style.Fill({
-		// 		color: 'rgba(45,214,147,.4)'
-		// 	})
-		// }),
-
 		image: new ol.style.Icon(({
-			src: 'svg/tree-min.png',
+			src: 'icons/tree-min.png',
 			opacity: .5,
 			scale: .5,
-			// size: [26,26]
 		}))
 
 	});
 
-	var styleActive = new ol.style.Style({
+	var mapCenterStyle = new ol.style.Style({
 		image: new ol.style.Icon(({
-			src: 'svg/overview-center.png',
-			// opacity: .5,
+			src: 'icons/overview-center.png',
 			scale: .5,
-			// size: [26,26]
 		}))
 	});
 
 	var tFeatures = []
+	// add trees
 	locations.forEach(function(location) {
 
 		var feature = new ol.Feature({
@@ -187,18 +139,16 @@ function createTreeLayer(locations, tree) {
 		tFeatures.push(feature)
 	})
 
-
-	var feature = new ol.Feature({
+	// add a rectanngle to show where the other map is centered at
+	var mapCenter = new ol.Feature({
 		geometry: new ol.geom.Point(proj4('EPSG:21781', 'EPSG:3857', map.getView().getCenter()))
 	})
-	feature.setStyle(styleActive)
-	tFeatures.push(feature)
+	mapCenter.setStyle(mapCenterStyle)
+	tFeatures.push(mapCenter)
 
 	var source = new ol.source.Vector({
 		features: tFeatures
 	})
 
-	tLayer.setSource(source)
-
-	// overview.addLayer(tLayer)
+	return source
 }

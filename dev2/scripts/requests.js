@@ -25,9 +25,12 @@ function getTreeTile(resolve, reject, tile) {
 function getDetails(resolve, reject, Baumnummer) {
 	var url = "http://api.flaneur.io/baumkataster/tree/" + Baumnummer
 
-	$.get(url, function(data) {
+	$.get(url).success(function(data) {
 		// return parsed result
 		resolve(JSON.parse(data)[0])
+	}).fail(function(){
+		goToFail("Details konnten nicht geladen werden, bitte später erneut versuchen.")
+		reject()
 	})
 }
 
@@ -117,8 +120,6 @@ function getByUrl(resolve, reject, url, p) {
 }
 
 function searchTrees(resolve, reject, query) {
-	
-
 	$.get(url, function(data) {
 		resolve(JSON.parse(data))
 	})

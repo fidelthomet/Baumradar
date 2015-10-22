@@ -68,7 +68,7 @@ function showResults(data) {
 
 		style = new ol.style.Style({
 			image: new ol.style.Icon(({
-				src: 'svg/user-accent.svg',
+				src: 'icons/user-accent.svg',
 				size: [40, 40]
 			}))
 		});
