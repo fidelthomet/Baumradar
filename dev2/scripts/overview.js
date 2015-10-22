@@ -15,7 +15,7 @@ function initOverview(tree) {
 		getByUrl(res, rej, "https://data.stadt-zuerich.ch/storage/f/stadtkreis/stadtkreis.json", {proxy: true})
 	}))
 	overviewPromises.push(new Promise(function(res, rej) {
-		getByUrl(res, rej, "Zuerichsee.json")
+		getByUrl(res, rej, "data/Zuerichsee.json")
 	}))
 
 	Promise.all(overviewPromises).then(function(data) {
