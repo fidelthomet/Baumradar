@@ -240,7 +240,7 @@ function getWmtsLayers(resolve, reject, url) {
 			state.layers[wmtsLayer.Identifier == "UebersichtsplanAktuell" ? "map" : "aerial"] = new ol.layer.Tile({
 				source: new ol.source.WMTS(options),
 				opacity: wmtsLayer.Identifier == "UebersichtsplanAktuell" ? 0.4 : 1,
-				visible: wmtsLayer.Identifier == "UebersichtsplanAktuell",
+				visible: false,
 			})
 		})
 

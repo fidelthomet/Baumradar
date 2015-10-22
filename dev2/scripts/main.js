@@ -19,8 +19,8 @@ var state = {
 	geolocation: false,
 	compass: false,
 	user: {
-		location: [8.545953265970327, 47.364551977441565],
-		defaultLocation: [8.545953265970327, 47.364551977441565],
+		location: [8.545079, 47.366989],
+		defaultLocation: [8.545079, 47.366989],
 		heading: 0
 	},
 	lastRequest: [8.545953265970327, 47.364551977441565],
@@ -90,8 +90,10 @@ function init(askForLocation) {
 		initPromises.push(new Promise(initLocation))
 
 	Promise.all(initPromises).then(function() {
-		// finish initialization // center map on user location 
+		// finish initialization 
+		// center map on user location, show map, draw user 
 		panTo(state.user.location, true)
+		state.layers.map.setVisible(true)
 		initUser()
 
 		// Get trees for current location, then finish init (or wait until first map tile is loaded)$
@@ -269,7 +271,7 @@ function initEvents() {
 
 	// enter info state
 	$("header .btOpt").click(function() {
-		$("#info").addClass("active")
+		$("#info").toggleClass("active")
 	})
 
 	// leave info state

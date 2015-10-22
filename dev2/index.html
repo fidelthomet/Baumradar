@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Zürcher Bäume</title>
+	<title>Baumradar</title>
 	<!-- Mobile -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
-
+	<!-- Icons -->
+	<link rel="apple-touch-icon" sizes="120x120" href="icons/iphone2x.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="icons/iphone3x.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="icons/ipad2x.png">
+	<link rel="icon" type="image/png" href="icons/favicon.png">
 	<!-- Typekit -->
 	<script src="https://use.typekit.net/ivz4cnl.js"></script>
 	<script>try{Typekit.load({ async: true });}catch(e){}</script>
@@ -38,7 +42,7 @@
 		<div class="v-map">
 			<div class="btSearch"></div>
 			<div class="btBack"></div>
-			<div class="title">Zürcher Bäume</div>
+			<div class="title">Baumradar</div>
 			<div class="search">Suche <span class="sub">nach Bäumen oder Adressen</span></div>
 			<div contentEditable="true" class="input"></div>
 			<div class="btOpt"></div>
@@ -94,7 +98,7 @@
 	</div>
 	<div id="info">
 		<div class="close"></div>
-		<div class="text"></div>
+		<div class="text">Das Baumradar gibt einen Einblick in die Vielfalt der in Zürich stehenden Bäume.<br /><br />Die Anwendung dient als Beispiel für die Integration von Daten aus dem <a target="_blank" href="https://data.stadt-zuerich.ch/">Open Data Katalog</a> in Webapplikationen. Die Baumradar greift auf das <a target="_blank" href="https://data.stadt-zuerich.ch/dataset/baumkataster">Baumkataster</a>, die <a target="_blank" href="https://data.stadt-zuerich.ch/dataset/adressen">Gebäudeadressen</a> und die <a target="_blank" href="https://data.stadt-zuerich.ch/dataset/stadtkreis">Stadtkreise</a> zu. Als Kartenmaterial kommen der <a target="_blank" href="https://data.stadt-zuerich.ch/dataset/uebersichtsplan">aktuelle Übersichtsplan</a> und das <a target="_blank" href="https://data.stadt-zuerich.ch/dataset/luftbild-2011">Luftbild 2011</a> zum Einsatz. Detailierte Informationen zu den jeweiligen Baumarten stammen von Wikipedia, Abbildungen von Wikimedia.<br /><br />Detailierte Informationen zur Enstehung der App und zur Verwendung von Open Data finden Sie <a target="_blank" href="">hier</a><br/><br/>Verwendete Frameworks und Libraries: <a target="_blank" href="http://openlayers.org/">Open Layers 3</a>, <a target="_blank" href="http://proj4js.org/">Proj4js</a>, <a target="_blank" href="https://jquery.org">jQuery</a>, <a target="_blank" href="https://github.com/jakearchibald/es6-promise">ES6-Promise</a> and <a target="_blank" href="http://ricostacruz.com/nprogress/">NProgress</a></div>
 	</div>
 </body>
 </html>

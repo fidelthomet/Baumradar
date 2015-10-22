@@ -47,6 +47,7 @@ body{
 			cursor: pointer;
 			right: 6px;
 			background: url('svg/bt-opt.svg') center center no-repeat;
+			border-left: 1px solid #eee;
 		}
 
 		.title{
@@ -498,6 +499,7 @@ body{
 			position: fixed;
 			width: 60px;
 			height: 60px;
+			cursor: pointer;
 			background: url(svg/close2.svg) center center no-repeat;
 			right: 0px;
 			top: 0px;
@@ -549,7 +551,7 @@ body{
 			position: fixed;
 			height: 30px;
 			width: 30px;
-			top: 50%;
+			top: 200px;
 			left: 50%;
 			transition: opacity .4s;
 			opacity: 0;
@@ -628,13 +630,14 @@ body{
 		&.active{
 			opacity: 1;
 			pointer-events: all;
-			transform: translateX(0);
+			transform: translate(0,0);
 		}
 
 		.close{
 			position: fixed;
 			width: 60px;
 			height: 60px;
+			cursor: pointer;
 			background: url(svg/close-black.svg) center center no-repeat;
 			right: 0px;
 			top: 0px;
@@ -642,7 +645,16 @@ body{
 
 		.text{
 			font-size: 12px;
-			padding: 60px 24px 0px;
+			padding: 60px 18px 0px 12px;
+			hyphens: auto;
+			-o-hyphens: auto;
+			-ms-hyphens: auto;
+			-moz-hyphens: auto;
+			-webkit-hyphens: auto;
+			a{
+				color: $green;
+				text-decoration: none;
+			}
 		}
 	}
 
@@ -682,6 +694,21 @@ body{
 	body{
 		header{
 			width: 380px;
+
+			.btOpt{
+				position: fixed;
+				transition: all .4s;
+				width: 48px;
+				height: 48px;
+				bottom: 6px;
+				cursor: pointer;
+				    border-left: 1px none;
+				    border-left: 1px solid #EEE;
+				right: 386px;
+				background: $white url('svg/bt-opt.svg') center center no-repeat;
+				box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+				border-radius: 2px;
+			}
 		}
 		#trees{
 			width: 380px;
@@ -711,6 +738,17 @@ body{
 
 		#results{
 			width: 392px;
+		}
+		#info{
+			width: 320px;
+			height: 344px;
+			left: 50%;
+			margin-left: -160px;
+			top: 100px;
+			box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.40);
+			border-radius: 2px;
+			background: #fff;
+			transform: translateY(30%);
 		}
 	}
 }

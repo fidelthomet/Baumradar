@@ -37,7 +37,8 @@ body {
       height: 48px;
       cursor: pointer;
       right: 6px;
-      background: url("svg/bt-opt.svg") center center no-repeat; }
+      background: url("svg/bt-opt.svg") center center no-repeat;
+      border-left: 1px solid #eee; }
     body header .title {
       pointer-events: none;
       position: fixed;
@@ -359,6 +360,7 @@ body {
       position: fixed;
       width: 60px;
       height: 60px;
+      cursor: pointer;
       background: url(svg/close2.svg) center center no-repeat;
       right: 0px;
       top: 0px; }
@@ -398,7 +400,7 @@ body {
       position: fixed;
       height: 30px;
       width: 30px;
-      top: 50%;
+      top: 200px;
       left: 50%;
       transition: opacity .4s;
       opacity: 0; }
@@ -452,17 +454,26 @@ body {
     body #info.active {
       opacity: 1;
       pointer-events: all;
-      transform: translateX(0); }
+      transform: translate(0, 0); }
     body #info .close {
       position: fixed;
       width: 60px;
       height: 60px;
+      cursor: pointer;
       background: url(svg/close-black.svg) center center no-repeat;
       right: 0px;
       top: 0px; }
     body #info .text {
       font-size: 12px;
-      padding: 60px 24px 0px; }
+      padding: 60px 18px 0px 12px;
+      hyphens: auto;
+      -o-hyphens: auto;
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto; }
+      body #info .text a {
+        color: #2DD693;
+        text-decoration: none; }
 
 @keyframes ani1 {
   0% {
@@ -481,6 +492,19 @@ body {
 @media (min-width: 800px) {
   body header {
     width: 380px; }
+    body header .btOpt {
+      position: fixed;
+      transition: all .4s;
+      width: 48px;
+      height: 48px;
+      bottom: 6px;
+      cursor: pointer;
+      border-left: 1px none;
+      border-left: 1px solid #EEE;
+      right: 386px;
+      background: #fff url("svg/bt-opt.svg") center center no-repeat;
+      box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
+      border-radius: 2px; }
   body #trees {
     width: 380px;
     top: 0px;
@@ -500,6 +524,16 @@ body {
     bottom: 6px;
     left: 6px; }
   body #results {
-    width: 392px; } }
+    width: 392px; }
+  body #info {
+    width: 320px;
+    height: 344px;
+    left: 50%;
+    margin-left: -160px;
+    top: 100px;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.4);
+    border-radius: 2px;
+    background: #fff;
+    transform: translateY(30%); } }
 
 /*# sourceMappingURL=style.css.map */
