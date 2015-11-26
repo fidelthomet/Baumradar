@@ -1,0 +1,742 @@
+$white: #fff;
+$green: #2DD693;
+
+body{
+	margin: 0px;
+	font-family: "aktiv-grotesk", sans-serif;
+	font-weight: 300;
+	background: $white;
+
+	header{
+		position: fixed;
+		height: 48px;
+		top: 6px;
+		left: 6px;
+		right: 6px;
+		transition: all .4s;
+		background: $white;
+		box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.40);
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
+
+		.btSearch{
+			position: fixed;
+			transition: all .4s;
+			width: 48px;
+			height: 48px;
+			left: 6px;
+			cursor: pointer;
+			background: url('../icons/bt-search.svg') center center no-repeat;
+		}
+
+		.btBack{
+			position: fixed;
+			transition: all .4s;
+			width: 48px;
+			height: 48px;
+			left: 6px;
+			cursor: pointer;
+			opacity: 0;
+			background: url('../icons/bt-back.svg') center center no-repeat;
+		}
+
+		.btOpt{
+			position: fixed;
+			transition: all .4s;
+			width: 48px;
+			height: 48px;
+			cursor: pointer;
+			right: 6px;
+			background: url('../icons/bt-opt.svg') center center no-repeat;
+			border-left: 1px solid #eee;
+		}
+
+		.title{
+			pointer-events: none;
+			position: fixed;	
+			height: 32px;
+			left: 0px;
+			right: 48px;
+			padding: 8px 12px;
+			font-size: 24px;
+			font-weight: 500;
+			color: $green;
+			transition: all .4s;
+			left: 40px;
+		}
+
+
+		.input{
+			font-family: inherit;
+			position: fixed;	
+			height: 32px;
+			left: 52px;
+			outline: none;
+			right: 52px;
+			padding: 8px 0px;
+			font-size: 24px;
+			font-weight: 500;
+			color: $white;
+			background: transparent;
+			opacity: 0;
+			border: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+		}
+
+		.search{
+			pointer-events: none;
+			position: fixed;	
+			height: 32px;
+			left: 20px;
+			right: 0px;
+			padding: 8px 12px;
+			font-size: 24px;
+			font-weight: 500;
+			color: $white;
+			transition: all .4s;
+			opacity: 0;
+
+
+			.sub{
+				pointer-events: none;
+				font-size: 12px;
+				font-weight: 300;
+			}
+		}
+
+		&.search{
+
+			background: $green;
+			box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.60);
+
+			.btSearch{
+				opacity: 0;
+				// left: 16px;
+			}
+
+			.btOpt{
+				opacity: 0;
+				// right: -4px;
+			}
+
+			.btBack{
+				opacity: 1;
+				left: 6px;
+			}
+
+			.title{
+				opacity: 1;	
+				left: 60px;
+			}
+
+			.input{
+				opacity: 1;
+			}
+
+			.search{
+				opacity: .7;
+				left: 40px;
+
+				&.hide{
+					opacity: 0;
+				}
+			}
+		}
+	}
+
+	#results{
+		position: fixed;
+		overflow-y: auto;
+		overflow-x: hidden;
+		top: 54px;
+		left: 0;
+		width: 100%;
+		bottom: 0px;
+		z-index: -1;
+		transition: all .4s;
+		opacity: 0;
+		pointer-events: none;
+
+		&.search{
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		#rInner{
+			background: #fff;
+			margin: 6px 6px 0px 6px;
+			box-shadow: 0px 0px 4px 0px rgba(0,0,0,.5);
+
+			.rTreeItem, .rAddressItem{
+				height: 55px;
+				border-bottom: 1px solid #E2E2E2;
+				padding: 8px 12px;
+
+				&.rAddressItem{
+					height: 37px;
+				}
+
+				&:last-of-type{
+					border: none;
+				}
+
+				div{
+					font-size: 12px;
+					font-weight: 300;
+					white-space: nowrap;
+					overflow: hidden;
+					margin-bottom: 1px;
+
+					&.rTitle{
+						font-size: 16px;
+						margin-bottom: 2px;
+						color: $green;
+					}
+				}
+			}
+		}
+	}
+
+	#map{
+		z-index: -2;
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		bottom: 60px;
+		background: #fff;
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
+
+	}
+
+	#geolocation{
+		width: 48px;
+		height: 48px;
+		position: fixed;
+		bottom: 160px;
+		right: 60px;
+		background: $white url(../icons/geolocation-accent.svg) center center no-repeat;
+		box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.50);
+		border-radius: 2px;
+		z-index: -2;
+	}
+
+	#mapchange{
+		width: 48px;
+		height: 48px;
+		position: fixed;
+		bottom: 160px;
+		right: 6px;
+		background: $white url(../icons/aerial.png) center center no-repeat;
+		box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.50);
+		border-radius: 2px;
+		z-index: -2;
+
+		&.map{
+			background: $white url(../icons/map.png) center center no-repeat;
+		}
+	}
+
+	#trees{
+		position: absolute;
+		top: 100%;
+		margin-top: -120px;
+		width: 100%;
+		background: #fff;
+		min-height: 144px;
+		box-shadow: 0px -1px 4px 0px rgba(0,0,0,0.50);
+
+		&.search{
+			position: fixed;
+			z-index: -2;
+		}
+
+		.tree{
+			// position: absolute;
+			width: 100%;
+			opacity: .3;
+			transition: opacity .1s;
+			background: #fff;
+			min-height: 100%;
+
+			&.active{
+				opacity: 1;
+			}
+
+			.title{
+				position: relative;
+				width: 100%;
+				min-height: 64px;
+				background: $green;
+				color: $white;
+				font-size: 12px;
+
+				.left, .border{
+					position: absolute;
+
+					&.left{
+						height: 100%;
+						width: 48px;
+						
+						.dir{
+							width: 34px;
+							height: 34px;
+							top: 7px;
+							left: 7px;
+							position: absolute;
+							background: url(../icons/dir-white.svg) center center no-repeat;
+						}
+
+						.dist{
+							position: absolute;
+							text-align: center;
+							top: 40px;
+							width: 48px;
+						}
+					}
+
+					&.border{
+						position: absolute;
+						left: 48px;
+						width: 1px;
+						top: 6px;
+						bottom: 6px;
+						background: #fff;
+					}
+				}
+
+				.right{
+					padding: 6px 5px 6px 10px;
+
+					&.geo{
+						margin-left: 49px;
+					}
+
+					.ger{
+						font-size: 24px;
+						line-height: 26px;
+						margin-bottom: 5px;
+						margin-top: 3px;
+						font-weight: 500;
+					}
+
+					.lat{
+						margin-bottom: 3px;
+					}	
+				}
+			}
+		}
+
+		.details{
+			height: 36px;
+			padding-left: 12px;
+			padding-right: 12px;
+			border-bottom: 1px solid $green;
+			text-align: justify;
+			font-size: 12px;
+			color: $green;
+
+			.detail{
+				display: inline-block;
+				margin-top: -2px;
+
+				&:before{
+					padding-right: 2px;
+					top: 7px;
+					position: relative;
+				}
+				&.year:before{
+					content:url('../icons/detail-year.svg')
+				}
+				&.height:before{
+					content:url('../icons/detail-height.svg')
+				}
+				&.width:before{
+					content:url('../icons/detail-width.svg')
+				}
+				&.baumnum:before{
+					content:url('../icons/detail-id.svg')
+				}
+			}
+
+			&:after{
+				content: "";
+				width: 100%;
+				display: inline-block;
+			}
+
+		}
+
+		.location{
+			height: 36px;
+			padding-left: 12px;
+			padding-right: 12px;
+			border-bottom: 1px solid $green;
+			font-size: 12px;
+			color: $green;
+
+			div{
+				margin-top: -2px;
+
+				&:before{
+					padding-right: 2px;
+					top: 7px;
+					position: relative;
+					content:url('../icons/location.svg')
+				}
+			}
+		}
+		.images{
+			background-color: #000;
+			height: 204px;
+			width: 100%;
+			position: relative;
+			margin-top: -1px;
+			padding: 2px 0px;
+			overflow: hidden;
+
+			.img1{
+				height: 204px;
+				width: 66%;
+				margin-left: -1px;
+				position: absolute;
+				background-size: cover;
+				background-position: center;
+			}
+
+			.img2{
+				left: 66%;
+				margin-left: 1px;
+				position: absolute;
+				width: 34%;
+				height: 100px;
+				background-size: cover;
+				background-position: center;
+			}
+			.img3{
+				width: 34%;
+				height: 102px;
+				top: 104px;
+				left: 66%;
+				margin-left: 1px;
+				position: absolute;
+				background-size: cover;
+				background-position: center center;
+			}
+
+			.simg{
+				height: 204px;
+				width: 100%;
+				position: absolute;
+				background-size: cover;
+				background-position: center;
+			}
+
+		}
+
+		.wiki{
+
+			hyphens: auto;
+			-o-hyphens: auto;
+			-ms-hyphens: auto;
+			-moz-hyphens: auto;
+			-webkit-hyphens: auto;
+
+			padding: 12px;
+			font-size: 12px;
+
+			a{
+				text-decoration: none;
+				color: $green;
+			}
+		}
+		
+		#overviewTitle{
+			font-size: 12px;
+			color: $green;
+			border-top: 1px solid $green;
+			padding: 12px 0px 0px 12px;
+
+		}
+
+		#overview{
+			width: 100%;
+			height: 270px;
+			pointer-events: none;
+			margin-bottom: 12px;
+		}
+	}
+
+	#imgDetail{
+		background: #000 center center no-repeat;
+		background-size: contain;
+		position: fixed;
+		width: 100%;
+		opacity: 0;
+		height: 100%;
+		z-index: 500;
+		pointer-events: none;
+		transition: opacity .4s;
+
+		&.active{
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.close{
+			position: fixed;
+			width: 60px;
+			height: 60px;
+			cursor: pointer;
+			background: url(../icons/close2.svg) center center no-repeat;
+			right: 0px;
+			top: 0px;
+		}
+
+		.licence{
+			position: fixed;
+			padding: 12px;
+			bottom: 0px;
+			font-size: 12px;
+
+			a{
+				text-decoration: none;
+				color: $white;
+			}
+		}
+	}
+
+	#splashscreen{
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0px;
+		left: 0px;
+		z-index: 750;
+		transition: opacity .4s;
+		background: $green url(../icons/splashbottom.svg) no-repeat left bottom;
+		background-size: 100% auto;
+
+		.text{
+			font-size: 24px;
+			font-weight: 500;
+			color: $white;
+			position: absolute;
+			left: 10px;
+			top: 12px;
+			transition: opacity .4s;
+		}
+
+		&.hide{
+			opacity: 0;
+			pointer-events: none;
+		}
+		
+		.ani{
+			background: url(../icons/tree-white.svg) center center no-repeat;
+			animation-iteration-count: infinite;
+			position: fixed;
+			height: 30px;
+			width: 30px;
+			top: 200px;
+			left: 50%;
+			transition: opacity .4s;
+			opacity: 0;
+			
+
+			&.absolute{
+				position: absolute;
+			}
+		}
+
+		.ani1{
+			animation-duration: 3s;
+			margin-top: -15px;
+			margin-left: -15px;
+		}
+
+		.ani2{
+			animation-duration: 4s;
+			margin-top: -15px;
+			margin-left: -50px;
+		}
+
+		.ani3{
+			animation-duration: 2.5s;
+			margin-top: -15px;
+			margin-left: 20px;
+		}
+
+		.ani4{
+			animation-duration: 3.2s;
+			margin-top: -50px;
+			margin-left: -15px;
+		}
+
+		.ani5{
+			animation-duration: 5s;
+			margin-top: -50px;
+			margin-left: -50px;
+		}
+
+		.ani6{
+			animation-duration: 1.5s;
+			margin-top: -50px;
+			margin-left: 20px;
+		}
+
+		.ani7{
+			animation-duration: 2.8s;
+			margin-top: 20px;
+			margin-left: -15px;
+		}
+
+		.ani8{
+			animation-duration: 4s;
+			margin-top: 20px;
+			margin-left: -50px;
+		}
+
+		.ani9{
+			animation-duration: 1.7s;
+			margin-top: 20px;
+			margin-left: 20px;
+		}
+	}
+
+	#info{
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(255,255,255,0.9);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity .4s, transform .4s;
+		transform: translateX(30%);
+
+		&.active{
+			opacity: 1;
+			pointer-events: all;
+			transform: translate(0,0);
+		}
+
+		.close{
+			position: absolute;
+			width: 60px;
+			height: 60px;
+			cursor: pointer;
+			background: url(../icons/close-black.svg) center center no-repeat;
+			right: 0px;
+			top: 0px;
+		}
+
+		.text{
+			font-size: 12px;
+			padding: 60px 18px 0px 12px;
+			hyphens: auto;
+			-o-hyphens: auto;
+			-ms-hyphens: auto;
+			-moz-hyphens: auto;
+			-webkit-hyphens: auto;
+			a{
+				color: $green;
+				text-decoration: none;
+			}
+		}
+	}
+
+	&.satelite{
+	}
+}
+
+@keyframes ani1 {
+	0% {
+		opacity: 0;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes ani2 {
+	0% {
+		opacity: 0;
+	}
+
+	75% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+@media (min-width: 800px) {
+	body{
+		header{
+			width: 380px;
+
+			.btOpt{
+				position: fixed;
+				transition: all .4s;
+				width: 48px;
+				height: 48px;
+				bottom: 6px;
+				cursor: pointer;
+				    border-left: 1px none;
+				    border-left: 1px solid #EEE;
+				right: 386px;
+				background: $white url('../icons/bt-opt.svg') center center no-repeat;
+				box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+				border-radius: 2px;
+			}
+		}
+		#trees{
+			width: 380px;
+			top: 0px;
+			right: 0px;
+			margin-top: 0px;
+			height: 100%;
+			overflow: auto;
+		}
+
+		#map{
+			width: auto;
+			right: 380px;
+			left: 0px;
+			height: 100%;
+		}
+
+		#geolocation{
+			bottom: 60px;
+			left: 6px;
+		}
+
+		#mapchange{
+			bottom: 6px;
+			left: 6px;
+		}
+
+		#results{
+			width: 392px;
+		}
+		#info{
+			width: 320px;
+			height: 344px;
+			left: 50%;
+			margin-left: -160px;
+			top: 100px;
+			box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.40);
+			border-radius: 2px;
+			background: #fff;
+			transform: translateY(30%);
+		}
+	}
+}

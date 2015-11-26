@@ -16,7 +16,7 @@ module.exports = function(grunt) {
 			my_target: {
 				files: {
 					'build/scripts/main.js': ['dev2/scripts/main.js', 'dev2/scripts/map.js', 'dev2/scripts/requests.js', 'dev2/scripts/geolocation.js', 'dev2/scripts/details.js', 'dev2/scripts/overview.js', 'dev2/scripts/search.js', 'dev2/scripts/helper.js'],
-					'build/libs/libs.js': ['libs/ol.js','libs/proj4.js','libs/21781.js','libs/jquery-2.1.4.min.js','libs/es6-promise.min.js','libs/nprogress.js']
+					'build/libs/libs.js': ['dev2/libs/ol.js','dev2/libs/proj4.js','dev2/libs/21781.js','dev2/libs/jquery-2.1.4.min.js','dev2/libs/es6-promise.min.js','dev2/libs/nprogress.js']
 				}
 			}
 		},
