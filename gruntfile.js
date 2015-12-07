@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 
 		watch: {
 			scripts: {
-				files: ['src/**/*'],
+				files: ['dev/**/*'],
 				tasks: ['default']
 			}
 		},
@@ -15,8 +15,8 @@ module.exports = function(grunt) {
    //  		}, 
 			my_target: {
 				files: {
-					'build/scripts/main.js': ['dev2/scripts/main.js', 'dev2/scripts/map.js', 'dev2/scripts/requests.js', 'dev2/scripts/geolocation.js', 'dev2/scripts/details.js', 'dev2/scripts/overview.js', 'dev2/scripts/search.js', 'dev2/scripts/helper.js'],
-					'build/libs/libs.js': ['dev2/libs/ol.js','dev2/libs/proj4.js','dev2/libs/21781.js','dev2/libs/jquery-2.1.4.min.js','dev2/libs/es6-promise.min.js','dev2/libs/nprogress.js']
+					'build/scripts/main.js': ['dev/scripts/main.js', 'dev/scripts/map.js', 'dev/scripts/requests.js', 'dev/scripts/geolocation.js', 'dev/scripts/details.js', 'dev/scripts/overview.js', 'dev/scripts/search.js', 'dev/scripts/helper.js'],
+					// 'build/libs/libs.js': ['dev/libs/ol.js','dev/libs/proj4.js','dev/libs/21781.js','dev/libs/jquery-2.1.4.min.js','dev/libs/es6-promise.min.js','dev/libs/nprogress.js']
 				}
 			}
 		},
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
 					collapseWhitespace: true
 				},
 				files: {
-					'build/index.html': 'dev2/index.html'
+					'build/index.html': 'dev/index.html'
 				}
 			}
 		},
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 		compass: {
 			dist: {
 				options: {
-					sassDir: 'dev2/scss',
+					sassDir: 'dev/scss',
 					cssDir: 'build/css',
 					environment: 'production'
 				}
@@ -56,21 +56,21 @@ module.exports = function(grunt) {
 					{
 						expand: true,
 						flatten: true,
-						src: ['dev2/icons/*'],
+						src: ['dev/icons/*'],
 						dest: 'build/icons',
 						filter: 'isFile'
 					},
 					{
 						expand: true,
 						flatten: true,
-						src: ['dev2/data/*'],
+						src: ['dev/data/*'],
 						dest: 'build/data',
 						filter: 'isFile'
 					},
 					{
 						expand: true,
 						flatten: true,
-						src: ['dev2/css/*'],
+						src: ['dev/css/*'],
 						dest: 'build/css',
 						filter: 'isFile'
 					}

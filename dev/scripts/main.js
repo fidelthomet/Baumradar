@@ -36,7 +36,7 @@ var state = {
 	search: false,
 	searchTreesP: undefined,
 	searchAddressesP: undefined,
-	tileSize: 200,
+	tileSize: .002,
 	tileCount: 0,
 	reqTiles: [],
 	ready: false,
@@ -48,17 +48,17 @@ var state = {
 
 $(function() {
 	if (localStorage.getItem("geo")) {
-		$("#splashscreen .text").hide()
-		init(true)
+		$("#splashscreen .text").hide();
+		init(true);
 	} else {
 		$("#allowgeo").click(function() {
-			init(true)
-			$("#splashscreen .text").css("opacity", 0)
-			localStorage.setItem("geo", true)
+			init(true);
+			$("#splashscreen .text").css("opacity", 0);
+			localStorage.setItem("geo", true);
 		})
 		$("#denygeo").click(function() {
-			$("#splashscreen .text").css("opacity", 0)
-			init(false)
+			$("#splashscreen .text").css("opacity", 0);
+			init(false);
 		})
 	}
 })
@@ -143,6 +143,8 @@ function refreshTrees(resolve, reject) {
 	// calculate extents of tiles in current map section
 	var tiles = calcTileExtents()
 
+
+
 	// request trees for each tile if it's not already loaded/requested
 	var tilePromises = []
 	tiles.forEach(function(tile) {
@@ -179,6 +181,12 @@ function refreshTrees(resolve, reject) {
 function calcTileExtents() {
 
 	var section = map.getView().calculateExtent(map.getSize())
+	var s1 = proj4('EPSG:21781', 'EPSG:4326', [section[0], section[1]])
+	var s2 = proj4('EPSG:21781', 'EPSG:4326', [section[2], section[3]])
+	section = [s1[0],s1[1],s2[0],s2[1]]
+	console.log(section)
+
+	
 
 	section.forEach(function(point, i) {
 		section[i] = point - point % state.tileSize
@@ -204,13 +212,20 @@ function calcTileExtents() {
 	}
 
 	var tiles = []
+	var tiles2 = []
+
+	console.log(lons)
+	console.log(lats)
 	lons.forEach(function(lon) {
 		lats.forEach(function(lat) {
-			var coord1 = proj4('EPSG:21781', 'EPSG:4326', [lon, lat])
-			var coord2 = proj4('EPSG:21781', 'EPSG:4326', [lon + state.tileSize, lat + state.tileSize])
+			var coord1 = [lon, lat]
+			var coord2 = [lon + state.tileSize, lat + state.tileSize]
 			tiles.push([coord1[0], coord1[1], coord2[0], coord2[1]])
+			tiles2.push([lon, lat, lon + state.tileSize, lat + state.tileSize])
 		})
 	})
+	console.log(JSON.stringify(tiles))
+	console.log(JSON.stringify(tiles2))
 
 	return tiles
 }
