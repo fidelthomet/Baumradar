@@ -232,6 +232,7 @@ function getWmtsLayers(resolve, reject, url) {
 				return
 
 			// create options from capabilities
+			console.log(wmtsLayer)
 			var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
 				layer: wmtsLayer.Identifier
 			})
@@ -244,20 +245,27 @@ function getWmtsLayers(resolve, reject, url) {
 			})
 		})
 
-		state.tilesLoadEnd = new Promise(function(resolve, reject){
+		state.tilesLoadEnd = new Promise(function(resolve, reject) {
 			state.tilesLoadEndResolve = resolve
 		})
 
-		state.layers.map.getSource().on("tileloadstart", function(e){
-			state.tileCount ++
+		state.layers.map.getSource().on("tileloadstart", function(e) {
+			state.tileCount++
 		})
 
-		state.layers.map.getSource().on("tileloadend", function(e){
-			state.tileCount --
-			if(!state.tileCount){
-				state.tilesLoadEndResolve()
-			}
+		state.layers.map.getSource().on("tileloadend", function(e) {
+			state.tileCount--
+				if (!state.tileCount) {
+					state.tilesLoadEndResolve()
+				}
 		})
+
+		state.layers.map.getSource().on("tileloaderror", function(e) {
+			localStorage.setItem("geo","outofbounds")
+			location.reload()
+		})
+
+
 
 		resolve()
 

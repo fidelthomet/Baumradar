@@ -8,20 +8,27 @@ function initLocation(resolve, reject) {
 		// use watchposition to detect if user moves around
 		navigator.geolocation.watchPosition(function(position) {
 
-			state.user.location = [position.coords.longitude, position.coords.latitude]
-			state.geolocation = true
+			if (position.coords.longitude > 8.398302613481356 && position.coords.longitude < 8.633312509540968 && position.coords.latitude > 47.29709259053008 && position.coords.latitude < 47.46115331797573) {
 
-			// update user
-			if (state.ready) {
-				if (state.watchposition) {
-					panTo(state.user.location)
+				state.user.location = [position.coords.longitude, position.coords.latitude]
+				state.geolocation = true
+
+				// update user
+				if (state.ready) {
+					if (state.watchposition) {
+						panTo(state.user.location)
+					}
+
+					updateUser()
+					updateDirection()
 				}
 
-				updateUser()
-				updateDirection()
+			
 			}
-
 			resolve()
+
+
+
 		}, function(error) {
 			goToFail('Ihr aktueller Aufenthaltsort konnte nicht ermittelt werden')
 			localStorage.removeItem("geo")

@@ -49,7 +49,14 @@ var state = {
 $(function() {
 	if (localStorage.getItem("geo")) {
 		$("#splashscreen .text").hide();
-		init(true);
+		if(localStorage.getItem("geo")=="outofbounds"){
+			localStorage.removeItem("geo")
+			goToFail('Ihr aktueller Aufenthaltsort ist ausserhalb von Zürich')
+			init(false);
+		} else {
+			init(true);
+		}
+		
 	} else {
 		$("#allowgeo").click(function() {
 			init(true);
@@ -164,8 +171,9 @@ function refreshTrees(resolve, reject) {
 		// add new trees to map
 		updateTrees(merged)
 
-		if (resolve)
+		if (resolve){
 			resolve(merged)
+		}
 	})
 }
 
